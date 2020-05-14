@@ -1,4 +1,4 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("AutoRoll", "deDE")
+local L = LibStub("AceLocale-3.0"):NewLocale("AutoRoll", "deDE", true)
 
 --@localization(locale="deDE", format="lua_additive_table", handle-subnamespaces="concat")@
 
@@ -100,6 +100,6 @@ L["entitlement to x, will roll next time"] = "item/s. Würfle auf das Nächste"
 
 L["round"] = "Runde"
 L["total won"] = "Total gewonnen"
-L["for"] = "für"
+
 
 --@end-do-not-package@
