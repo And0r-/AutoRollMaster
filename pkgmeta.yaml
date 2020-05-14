@@ -1,4 +1,4 @@
-package-as: AutoRollMaster
+package-as: AutoRoll3000
 
 externals:
   libs/LibStub: https://repos.wowace.com/wow/libstub/trunk

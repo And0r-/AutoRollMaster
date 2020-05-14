@@ -8,6 +8,8 @@ AutoRoll.conditionOperaters = {["=="]="ist gleich",[">="]="ist mindestens",["<="
 AutoRoll.dungeonList = {[309]="Zul'Gurub",[249]="Ony", [409]="MC", [469]="BWL", [389]="test instance"}
 AutoRoll.conditionList = {["quality"]="Qualität", ["dungeon"]="Dungeon", ["party_member"]="In der Gruppe mit", ["lua"]="Lua",["disabled"]="Deaktiviert",["deleted"]="Löschen",["item"]="Item"}
 
+local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
+
 
 --wow api, tis will do a lot other addons, i'm not sure is it local a lot faster?
 local GetLootRollItemInfo = GetLootRollItemInfo
@@ -163,6 +165,8 @@ end
 
 -- Debug function to emulate a roll windows event
 function AutoRoll:troll(rollId, itemId)
+	self:Print(L["ein test"])
+	self:Print("ein test")
 	local itemInfo = self:GetRollIdDataDebug(rollId);
 	if itemId then itemInfo.itemId = itemId end
 	self:CheckRoll(itemInfo)

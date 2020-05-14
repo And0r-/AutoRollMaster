@@ -4,7 +4,7 @@
 ## X-Embeds: Ace3
 
 
-## Title: AutoRoll |cFF0099FFMaster|r
+## Title: AutoRoll Master
 ## Notes: Define rules to Automatic roll or pass
 
 ## Notes-deDE: Definiere regeln um automatisch auf Items zu würfeln oder passen.
@@ -16,6 +16,8 @@
 
 
 libs.xml
+
+local.xml
 
 Main.lua
 Options.lua
