@@ -1,4 +1,5 @@
 AutoRoll = LibStub("AceAddon-3.0"):GetAddon("FdHrT_AutoRoll")
+local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
 -- 48	Blackfathom Deeps
 -- 230	Blackrock Depths
@@ -36,13 +37,13 @@ function AutoRoll:GetOptions()
   		childGroups = "tab",
   		args = {
 			settings = {
-				name = "Einstellungen",
+				name = L["overview"],
 				type = "group",
 				order = 1,
 				args = self:GetOptionSettings(),
 		    },
 			itemGroups = {
-				name = "Erweiterte Einstellungen",
+				name = L["advanced options"],
 				type = "group",
 				order = 2,
 				args = self:GetOptionItemGroups(),
@@ -60,26 +61,27 @@ end
 function AutoRoll:GetOptionSettings()
 	return { --profileItemGroupsEnabled
 		raidItemGroups = {
-			name = "Gildenleitung kann bestimmen was ich würfeln soll (kommt in Beta2)",
-			desc = "Wärend einem Raid kann die Gildenleitung meine eigenen Regeln überschreiben.",
+			name = L["accept share config"],
+			desc = L["accept share config desc"],
 			type = "toggle",
 			order = 1,
 			get = "IsGuildItemGroupsEnabled",
 			set = "ToggleGuildItemGroupsEnabled",
 			width = "full",
 		},
-		saveRollOptionsEnabled = {
-			name = "Beim würfeln kann man angeben das nächste mal wieder das selbe zu wählen",
-			desc = "Past/würfelt das nächste mal beim selben item automatisch, wenn 'merken' im Würfelfenster aktiviert wird",
-			type = "toggle",
-			order = 2,
-			get = "IssavedItemsEnabled",
-			set = "TogglesavedItemsEnabled",
-			width = "full",
-		},
+		-- I do not see a solution to do this so it is working for everyone. xloot will overwrite to lot.
+		-- saveRollOptionsEnabled = {
+		-- 	name = "Beim würfeln kann man angeben das nächste mal wieder das selbe zu wählen",
+		-- 	desc = "Past/würfelt das nächste mal beim selben item automatisch, wenn 'merken' im Würfelfenster aktiviert wird",
+		-- 	type = "toggle",
+		-- 	order = 2,
+		-- 	get = "IssavedItemsEnabled",
+		-- 	set = "TogglesavedItemsEnabled",
+		-- 	width = "full",
+		-- },
 		profileItemGroups = {
-			name = "Würfelregeln Einschalten",
-			desc = "Schaltet die definierten Regeln ein",
+			name = L["use local config"],
+			desc = L["use local config desc"],
 			type = "toggle",
 			order = 3,
 			get = "IsProfileItemGroupsEnabled",
@@ -129,7 +131,7 @@ function AutoRoll:GetOptionItemGroups()
 	local itemGroups = {
 		headerDescription = {
 			type = "description",
-			name = "Hier können verschiedene Gruppen definiert werden. \rWenn alle Regeln der ersten gruppe erfüllt sind, wird die Aktion ausgeführt. \rWenn nicht, wird die nächste Gruppe überprüft.",
+			name = L["headerDescription"],
 			order = 0,
 		},
 	}
@@ -153,8 +155,8 @@ function AutoRoll:GetOptionItemGroups()
 					arg = itemGroupId,
 				},
 				share = {
-					name = "Aufteilen",
-					desc = "In gruppe Aufteilen",
+					name = L["share active"],
+					desc = L["share active desc"],
 					type = "toggle",
 					order = 2,
 					get = "IsItemGroupShareEnabled",
@@ -163,7 +165,7 @@ function AutoRoll:GetOptionItemGroups()
 				},
 				shareOptions = self:GetItemGroupShareOptions(itemGroupId), 
 				description = {
-					name = "Beschreibung",
+					name = L["itemGroup name"],
 					type = "input",
 					order = 0,
 					get = "getItemGroupDescription",
@@ -172,8 +174,8 @@ function AutoRoll:GetOptionItemGroups()
 					width = "full",
 				},
 				conditions = {
-					name = "Regeln",
-					desc = "Bedingungen damit die Gruppe zum einsatz kommt",
+					name = L["conditions"],
+					desc = L["conditions desc"],
 					type = "group",
 					order = 4,
 					inline = true,
@@ -181,8 +183,8 @@ function AutoRoll:GetOptionItemGroups()
 					args = self:GetOptionItemGroupConditions(itemGroupId),
 				},
 				rs = {
-      				name = "Automatisch Würfeln:",
-      				desc = "Gibt an was mit den Items geschehen soll, welche alle Regeln erfüllen.",
+      				name = L["auto roll"],
+      				desc = L["auto roll desc"],
       				type = "select",
       				order = 6,
       				values = self.rollOptions,
@@ -196,8 +198,8 @@ function AutoRoll:GetOptionItemGroups()
 	end
 
 	itemGroups.addItemGroupButton = {
-		name = "Gruppe hinzufügen",
-		desc = "Gruppe hinzufügen",
+		name = L["add group"],
+		desc = L["add group desc"],
 		type = "execute",
 		order = -1,
 		func = "AddItemGroupOption",
@@ -216,7 +218,7 @@ function AutoRoll:GetItemGroupShareOptions(itemGroupId)
 		hidden = self:IsItemGroupShareEnabled({["arg"]=itemGroupId}) == false,
 		args = {
 			description = {
-				name = "Aufteilen ist aktiv. Auf ein Item wird nur gefürfelt bis man eins hat. \rDanach wird gepasst bis alle eins haben.",
+				name = L["share hint"],
 				type = "description",
 				order = 1,
 			},
@@ -228,8 +230,8 @@ end
 function AutoRoll:GetOptionItemGroupConditions(itemGroupId)
 	local conditions = {}
 	conditions.addConditionButton = {
-		name = "Regel hinzufügen",
-		desc = "Regel hinzufügen",
+		name = L["add condition"],
+		desc = L["add condition desc"],
 		type = "execute",
 		order = -1,
 		func = "AddConditionOption",
@@ -281,7 +283,7 @@ function AutoRoll:AddItemConditonOptions(conditions,order,itemGroupId,conditionI
 
 	conditions["condition"..conditionId.."Items"] = {
 		name = "",
-		desc = ", separierte liste mit Item Id's. Z.b: 19698,19699,19700",
+		desc = L["item condition desc"],
 		type = "input",
 		order = order,
 		get = "GetConditionArg",
@@ -312,7 +314,6 @@ function AutoRoll:AddQualityConditonOptions(conditions,order,itemGroupId,conditi
 
 	conditions["condition"..conditionId.."Quality"] = {
 		name = "",
-		desc = "Item Qualität",
 		type = "select",
 		order = order,
 		get = "GetConditionArg",
@@ -331,7 +332,6 @@ function AutoRoll:AddDungeonConditonOptions(conditions,order,itemGroupId,conditi
 
 	conditions["condition"..conditionId.."Dungeon"] = {
 		name = "",
-		desc = "Item Qualität",
 		type = "select",
 		order = order,
 		get = "GetConditionArg",
@@ -349,20 +349,19 @@ function AutoRoll:AddPartyMemberConditonOptions(conditions,order,itemGroupId,con
 --		arg = {itemGroupId,conditionId},
 	conditions["condition"..conditionId.."PartyMemberOperator"] = {
 		name = "",
-		desc = "Item Qualität",
 		type = "select",
 		order = order,
 		get = "GetConditionArg",
 		set = "SetConditionArg",
 		style = "dropdown",
-		values = {["oneOf"]="Einer von",["allOf"]="Alle von"},
+		values = {["oneOf"]=L["partyMember conditon oneOf"],["allOf"]=L["partyMember conditon allOf"]},
 		arg = {itemGroupId,conditionId,1},
 	}
 	order = order +1
 
 	conditions["condition"..conditionId.."PartyMember"] = {
 		name = "",
-		desc = ", separierte liste von Spielernamen",
+		desc = L["partyMember conditon desc"],
 		type = "input",
 		order = order,
 		get = "GetConditionArg",
@@ -378,7 +377,7 @@ function AutoRoll:AddLuaConditonOptions(conditions,order,itemGroupId,conditionId
 --		arg = {itemGroupId,conditionId},
 
 	conditions["condition"..conditionId.."Lua"] = {
-		name = "Noch nicht umgesetzt, kommt bald :D",
+		name = L["coming soon"],
 		desc = "",
 		type = "description",
 		order = order,
@@ -395,7 +394,7 @@ end
 function AutoRoll:refreshOptions()
 	local options = self:GetOptions();
 	options.args.profiles = self.profilOptions
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("AutoRoll", options)
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("AutoRoll3000", options)
 end
 
 function AutoRoll:GetConditionArg(info)
@@ -426,7 +425,7 @@ function AutoRoll:AddConditionOption(info)
 end
 
 function AutoRoll:AddItemGroupOption(info)
-	tinsert(self.db.profile.itemGroups, {description = "Neue Gruppe", conditions = {}, share = {}});
+	tinsert(self.db.profile.itemGroups, {description = L["new group name"], conditions = {}, share = {}});
 	self:refreshOptions();
 end
 
@@ -522,15 +521,15 @@ function AutoRoll:PrintShareStatus(info)
 	local sharedata = self.db.profile.share[info.arg]
 
 	self:Print(self.db.profile.itemGroups[info.arg].description)
-	self:Print("Drops in dieser Runde: "..sharedata.loot_counter)
-	self:Print("Spieler in Gruppe: "..sharedata.party_member);
+	self:Print(sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
+
 	if sharedata.has_loot == 1 then
-		self:Print("Habe bereits mein/e Items erhalten, passe auf das nächste.")
+		self:Print(L["have all items this round"])
 	else
-		self:Print("Habe noch anrecht auf "..(sharedata.has_loot*-1)+1 .." item/s, würfle auf das nächste")
+		self:Print(L["entitlement to x"].." "..((sharedata.has_loot*-1)+1) .." "..L["entitlement to x, will roll next time"])
 	end
-	self:Print("Runde: "..sharedata.loot_round);
-	self:Print("Total gewonnen: "..sharedata.has_won_total);
+	self:Print(L["round"]..": "..sharedata.loot_round);
+	self:Print(L["total won"]..": "..sharedata.has_won_total);
 end
 
 function AutoRoll:PrintAllShareStatus(info)

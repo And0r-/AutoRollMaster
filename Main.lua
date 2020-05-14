@@ -1,14 +1,16 @@
 local AutoRoll = LibStub("AceAddon-3.0"):NewAddon("FdHrT_AutoRoll", "AceConsole-3.0", "AceEvent-3.0")
+local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
 AutoRoll.sharedata = {} --
 -- @todo:  save this in AutoRoll, to not have dublications...
-AutoRoll.rollOptions = {[0]="Passen", [1]="Bedarf", [2]="Gier"}
-AutoRoll.itemQuality = {[2]="Außergewöhnlich", [3]="Selten", [4]="Episch", [5]="Legendär", [6]="Artifakt"}
-AutoRoll.conditionOperaters = {["=="]="ist gleich",[">="]="ist mindestens",["<="]="ist höchstens",[">"]="ist höher als",["<"]="ist kleiner als"}
-AutoRoll.dungeonList = {[309]="Zul'Gurub",[249]="Ony", [409]="MC", [469]="BWL", [389]="test instance"}
-AutoRoll.conditionList = {["quality"]="Qualität", ["dungeon"]="Dungeon", ["party_member"]="In der Gruppe mit", ["lua"]="Lua",["disabled"]="Deaktiviert",["deleted"]="Löschen",["item"]="Item"}
+AutoRoll.rollOptions = {[0]=L["Pass"], [1]=L["Need"], [2]=L["Greed"]}
+AutoRoll.itemQuality = {[2]=L["uncommon"], [3]=L["rare"], [4]=L["epic"], [5]=L["legendary"], [6]=L["artifact"]}
+AutoRoll.conditionOperaters = {["=="]=L["equal"],[">="]=L["minimum"],["<="]=L["maximum"],[">"]=L["bigger then"],["<"]=L["lower then"]}
+AutoRoll.dungeonList = {[309]=L["Zul'Gurub"],[249]=L["Ony"], [409]=L["MC"], [469]=L["BWL"], [389]="test instance"}
+AutoRoll.conditionList = {["quality"]=L["Quality"], ["dungeon"]=L["Dungeon"], ["party_member"]=L["in group with"], ["lua"]="Lua",["disabled"]=L["disabled"],["deleted"]=L["deleted"],["item"]=L["item"]}
 
-local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
+
+
 
 
 --wow api, tis will do a lot other addons, i'm not sure is it local a lot faster?
@@ -36,7 +38,7 @@ local dbDefaults = {
 			itemGroupsRaid = {}, -- here are the groups stored you recive from raid lead
 			itemGroups = { -- When not stored in the savedItems it will check the items groups
 				{
-					description = "Grüne ZG Münzen im Raid gerecht aufteilen",
+					description = L["ZG coin desc"],
 					enabled = true,
 					share = {
 						enabled = true,
@@ -51,7 +53,7 @@ local dbDefaults = {
 					},
 				},
 				{
-					description = "Blaue ZG Schmuckstücke der Hakkari im Raid gerecht aufteilen",
+					description = L["ZB bijous desc"],
 					enabled = true,
 					share = {
 						enabled = true,
@@ -65,7 +67,7 @@ local dbDefaults = {
 					},
 				},
 				{ -- 
-					description = "Auf restliche Grüne und Blaue Items passen",
+					description = L["all green items"],
 					enabled = false, 
 					share = {
 						enabled = false,
@@ -98,8 +100,8 @@ function AutoRoll:OnInitialize()
     self:RegisterChatCommand("rl", function() ReloadUI() end)
     self:loadDb()
     self:refreshOptions()
-    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("AutoRoll", "AutoRoll Master")
-    self:RegisterChatCommand("arm", "ChatCommand")
+    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("AutoRoll3000", "AutoRoll3000")
+    self:RegisterChatCommand("ar3", "ChatCommand")
 end
 
 function AutoRoll:OnEnable()
@@ -119,14 +121,11 @@ function AutoRoll:loadDb()
 end
 
 function AutoRoll:ChatCommand(input)
-	self:Print("start chatCommand")
     if not input or input:trim() == "" then
-    	self:Print("show config gui")
         InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
         InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
     else
-    	self:Print("run ace config")
-        LibStub("AceConfigCmd-3.0"):HandleCommand("arm", "AutoRoll", input)
+        LibStub("AceConfigCmd-3.0"):HandleCommand("ar3", "AutoRoll3000", input)
     end
 end
 
@@ -141,14 +140,14 @@ function AutoRoll:GetRollIdData(rollId)
 end
 
 -- Fake roll data used when you use the AutoRoll:troll function for a test roll
-function AutoRoll:GetRollIdDataDebug(rollId)
+function AutoRoll:GetRollIdDataDebug(rollId, itemId)
 	local itemInfo = {
 		rollId = rollId,
-		name = "test item",
 		count = 1,
-		quality = 3,
-		itemId = 19698,
+		itemId = itemId or 19698,
 	}
+
+	itemInfo.name, itemInfo.itemLink, itemInfo.quality, _, _, itemInfo.itemType, itemInfo.itemSubType, _, itemInfo.itemEquipLoc, itemInfo.texture, _ = GetItemInfo(itemInfo.itemId)
 	return itemInfo
 end
 
@@ -165,10 +164,7 @@ end
 
 -- Debug function to emulate a roll windows event
 function AutoRoll:troll(rollId, itemId)
-	self:Print(L["ein test"])
-	self:Print("ein test")
-	local itemInfo = self:GetRollIdDataDebug(rollId);
-	if itemId then itemInfo.itemId = itemId end
+	local itemInfo = self:GetRollIdDataDebug(rollId, itemId);
 	self:CheckRoll(itemInfo)
 end
 
@@ -197,11 +193,12 @@ function AutoRoll:CheckRoll(itemInfo)
 
 	local currentItemGroup = self.db.profile.itemGroups[currentItemGroupId]
 
-	if currentItemGroup.share then
+	if currentItemGroup.share.enabled then
 		-- round robin mode. only roll when player not have more then the other from currentItemGroupId.
-		self:CheckShare(itemInfo.rollId, currentItemGroupId, currentItemGroup)
+		self:CheckShare(itemInfo, currentItemGroupId, currentItemGroup)
 	else
 		-- auto roll
+		self:Print(L["roll"].." "..self.rollOptions[currentItemGroup.rollOptionSuccsess].." "..L["for"].." "..itemInfo.itemLink);
 		RollOnLoot(itemInfo.rollId, currentItemGroup.rollOptionSuccsess);
 	end
 end
@@ -281,8 +278,8 @@ function AutoRoll:findGroup(itemInfo, itemGroups)
 end
 
 -- a little bit messy at the moment, 
-function AutoRoll:CheckShare(rollId, currentItemGroupId)
-	self.db.profile.rolls[rollId] = currentItemGroupId;
+function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
+	self.db.profile.rolls[itemInfo.rollId] = currentItemGroupId;
 	if self.db.profile.share[currentItemGroupId] == nil then self:initShare(currentItemGroupId) end
  	local sharedata = self.db.profile.share[currentItemGroupId];
 
@@ -291,18 +288,18 @@ function AutoRoll:CheckShare(rollId, currentItemGroupId)
 --		print("vor würfeln. has_loot: "..has_loot)
 	if sharedata.has_loot < 1 then
 		--würfeln
-		print("Würfle auf Item drops:"..sharedata.loot_counter.." spieler anz:"..sharedata.party_member);
-		RollOnLoot(rollId, 2);
+		self:Print(self.rollOptions[2].." "..L["for"].." "..itemInfo.itemLink.." "..sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
+		RollOnLoot(itemInfo.rollId, 2);
 	else
-		print("Passe auf Items, da ich schon eins habe. drops:"..sharedata.loot_counter.." spieler anz:"..sharedata.party_member);
-		RollOnLoot(rollId, 0);
+		self:Print(self.rollOptions[0].." "..L["for"].." "..itemInfo.itemLink.." "..sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
+		RollOnLoot(itemInfo.rollId, 0);
 	end
 
 	if sharedata.party_member <= sharedata.loot_counter then
 		sharedata.loot_counter = 0;
 		sharedata.has_loot = sharedata.has_loot -1;
 		sharedata.loot_round = sharedata.loot_round +1;
-		print("Alle haben ein Item. Neue Runde :D");
+		self:Print(L["All player has a"].." "..self.db.profile.itemGroups[currentItemGroupId].description..". "..L["Start a new round"]);
 	end
 end
 
