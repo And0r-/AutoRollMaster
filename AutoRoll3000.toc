@@ -4,7 +4,7 @@
 ## X-Embeds: Ace3
 
 
-## Title: AutoRoll Master
+## Title: AutoRoll3000
 ## Notes: Define rules to Automatic roll or pass
 
 ## Notes-deDE: Definiere regeln um automatisch auf Items zu würfeln oder passen.
