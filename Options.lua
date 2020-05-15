@@ -114,14 +114,6 @@ function AutoRoll:GetOptionDebug()
 			name = "",
 			order = 4,
 		},
-		debug = {
-			name = "Debug",
-			desc = "verteile alle items, nicht nur die münzen",
-			type = "toggle",
-			order = 5,
-			get = "IsDebug",
-			set = "ToggleDebug",
-		},
 	}
 end
 
@@ -172,7 +164,7 @@ function AutoRoll:GetOptionItemGroups()
 					set = "ToggleItemGroupShareEnabled",
 					arg = itemGroupId,
 				},
-				
+
 				shareOptions = self:GetItemGroupShareOptions(itemGroupId, 3), 
 
 				newline1 = {
@@ -411,18 +403,6 @@ end
 
 function AutoRoll:SetConditionArg(info, value)
 	self.db.profile.itemGroups[info.arg[1]].conditions[info.arg[2]].args[info.arg[3]] = value
-end
-
-function AutoRoll:IsDebug(info)
-	return Round_Lood_All == 1
-end
-
-function AutoRoll:ToggleDebug(info)
-	if Round_Lood_All == 1 then
-		Round_Lood_All = 0
-	else
-		Round_Lood_All = 1
-	end
 end
 
 function AutoRoll:AddConditionOption(info)
