@@ -46,7 +46,13 @@ function AutoRoll:GetOptions()
 				name = L["advanced options"],
 				type = "group",
 				order = 2,
-				args = self:GetOptionItemGroups(),
+				args = self:GetOptionItemGroups("itemGroups"),
+		    },
+			itemGroupsRaid = {
+				name = "Raid rules",
+				type = "group",
+				order = 2,
+				args = self:GetOptionItemGroups("itemGroupsRaid"),
 		    },
 			debug = {
 				name = "Debug",
@@ -118,7 +124,7 @@ function AutoRoll:GetOptionDebug()
 end
 
 
-function AutoRoll:GetOptionItemGroups()
+function AutoRoll:GetOptionItemGroups(itemGroupName)
 
 	local itemGroups = {
 		headerDescription = {
@@ -128,12 +134,13 @@ function AutoRoll:GetOptionItemGroups()
 		},
 	}
 
-	for itemGroupId,dbItemGroup in ipairs(self.db.profile.itemGroups) do
+	for itemGroupId,dbItemGroup in ipairs(self:GetItemGroupDb(itemGroupName)) do
 
 		itemGroups["itemGroup"..itemGroupId] = {
 			name = dbItemGroup.description,
 			type = "group",
 			inline = true,
+			disabled = "isItemGroupDisabled",
 			width = "full",
 			order  = itemGroupId,
 			args = {
@@ -165,7 +172,7 @@ function AutoRoll:GetOptionItemGroups()
 					arg = itemGroupId,
 				},
 
-				shareOptions = self:GetItemGroupShareOptions(itemGroupId, 3), 
+				shareOptions = self:GetItemGroupShareOptions(itemGroupName, itemGroupId, 3), 
 
 				newline1 = {
 					name = "",
@@ -191,7 +198,7 @@ function AutoRoll:GetOptionItemGroups()
 					order = 7,
 					inline = true,
 					width = "full",
-					args = self:GetOptionItemGroupConditions(itemGroupId),
+					args = self:GetOptionItemGroupConditions(itemGroupName, itemGroupId),
 				},
 			}
 		};
@@ -201,6 +208,7 @@ function AutoRoll:GetOptionItemGroups()
 		name = L["add group"],
 		desc = L["add group desc"],
 		type = "execute",
+		disabled = "isItemGroupDisabled",
 		order = -1,
 		func = "AddItemGroupOption",
 		--arg = itemGroupId,
@@ -209,13 +217,13 @@ function AutoRoll:GetOptionItemGroups()
 	return itemGroups;
 end
 
-function AutoRoll:GetItemGroupShareOptions(itemGroupId, order)
+function AutoRoll:GetItemGroupShareOptions(itemGroupName, itemGroupId, order)
 	return {
 		name = "",
 		type = "group",
 		width = "full",
 		order  = order,
-		hidden = self:IsItemGroupShareEnabled({["arg"]=itemGroupId}) == false,
+		hidden = self:IsItemGroupShareEnabled({[1]=itemGroupName,["arg"]=itemGroupId}) == false,
 		args = {
 			description = {
 				name = L["share hint"],
@@ -227,7 +235,7 @@ function AutoRoll:GetItemGroupShareOptions(itemGroupId, order)
 	}
 end
 
-function AutoRoll:GetOptionItemGroupConditions(itemGroupId)
+function AutoRoll:GetOptionItemGroupConditions(itemGroupName, itemGroupId)
 	local conditions = {}
 	conditions.addConditionButton = {
 		name = L["add condition"],
@@ -238,10 +246,10 @@ function AutoRoll:GetOptionItemGroupConditions(itemGroupId)
 		arg = itemGroupId,
 	}
 
-	if self.db.profile.itemGroups[itemGroupId].conditions == nil then return conditions end
+	if self:GetItemGroupDb(itemGroupName)[itemGroupId].conditions == nil then return conditions end
 
 	local order = 1;
-	for conditionId,condition in ipairs(self.db.profile.itemGroups[itemGroupId].conditions) do
+	for conditionId,condition in ipairs(self:GetItemGroupDb(itemGroupName)[itemGroupId].conditions) do
 		if condition.type ~= "deleted" then 
 
 			conditions["condition"..conditionId] = {
@@ -398,59 +406,58 @@ function AutoRoll:refreshOptions()
 end
 
 function AutoRoll:GetConditionArg(info)
-	return self.db.profile.itemGroups[info.arg[1]].conditions[info.arg[2]].args[info.arg[3]]
+	return self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].args[info.arg[3]]
 end
 
 function AutoRoll:SetConditionArg(info, value)
-	self.db.profile.itemGroups[info.arg[1]].conditions[info.arg[2]].args[info.arg[3]] = value
+	self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].args[info.arg[3]] = value
 end
 
 function AutoRoll:AddConditionOption(info)
-	if self.db.profile.itemGroups[info.arg].conditions == nil then self.db.profile.itemGroups[info.arg].conditions = {} end
-	tinsert(self.db.profile.itemGroups[info.arg].conditions, {type = "disabled", args = {true}});
+	if self:GetItemGroupDb(info[1])[info.arg].conditions == nil then self:GetItemGroupDb(info[1])[info.arg].conditions = {} end
+	tinsert(self:GetItemGroupDb(info[1])[info.arg].conditions, {type = "disabled", args = {true}});
 
 	self:refreshOptions();
 end
 
 function AutoRoll:AddItemGroupOption(info)
-	tinsert(self.db.profile.itemGroups, {description = L["new group name"], conditions = {}, share = {}});
+	tinsert(self:GetItemGroupDb(info[1]), {description = L["new group name"], conditions = {}, share = {}});
 	self:refreshOptions();
 end
 
 
 function AutoRoll:GetConditionType(info)
-	return self.db.profile.itemGroups[info.arg[1]].conditions[info.arg[2]].type
+	return self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].type
 end
 
 function AutoRoll:SetConditionType(info, value)
-	self.db.profile.itemGroups[info.arg[1]].conditions[info.arg[2]].type = value
-
+	self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].type = value
 	self:refreshOptions();
 end
 
 function AutoRoll:GetItemGroupRollOptionSuccsess(info)
-	return self.db.profile.itemGroups[info.arg].rollOptionSuccsess
+	return self:GetItemGroupDb(info[1])[info.arg].rollOptionSuccsess
 end
 
 function AutoRoll:SetItemGroupRollOptionSuccsess(info, value)
-	self.db.profile.itemGroups[info.arg].rollOptionSuccsess = value
+	self:GetItemGroupDb(info[1])[info.arg].rollOptionSuccsess = value
 end
 
 function AutoRoll:getItemGroupDescription(info)
-	return self.db.profile.itemGroups[info.arg].description
+	return self:GetItemGroupDb(info[1])[info.arg].description
 end
 
 function AutoRoll:setItemGroupDescription(info, value)
-	self.db.profile.itemGroups[info.arg].description = value
+	self:GetItemGroupDb(info[1])[info.arg].description = value
 	self:refreshOptions();
 end
 
 function AutoRoll:IsItemGroupEnabled(info)
-	return self.db.profile.itemGroups[info.arg].enabled
+	return self:GetItemGroupDb(info[1])[info.arg].enabled
 end
 
 function AutoRoll:ToggleItemGroupEnabled(info, value)
-	self.db.profile.itemGroups[info.arg].enabled = value
+	self:GetItemGroupDb(info[1])[info.arg].enabled = value
 end
 
 function AutoRoll:IsProfileItemGroupsEnabled(info)
@@ -480,15 +487,15 @@ end
 
 
 function AutoRoll:IsItemGroupShareEnabled(info)
-	if self.db.profile.itemGroups[info.arg].share == nil then
+	if self:GetItemGroupDb(info[1])[info.arg].share == nil then
 		return false
 	else
-		return self.db.profile.itemGroups[info.arg].share.enabled
+		return self:GetItemGroupDb(info[1])[info.arg].share.enabled
 	end
 end
 
 function AutoRoll:ToggleItemGroupShareEnabled(info, value)
-	self.db.profile.itemGroups[info.arg].share.enabled = value
+	self:GetItemGroupDb(info[1])[info.arg].share.enabled = value
 	self:refreshOptions();
 end
 
@@ -508,7 +515,7 @@ end
 function AutoRoll:PrintShareStatus(info)
 	local sharedata = self.db.profile.share[info.arg]
 
-	self:Print(self.db.profile.itemGroups[info.arg].description)
+	self:Print(self:GetItemGroupDb(info[1])[info.arg].description)
 	self:Print(sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
 
 	if sharedata.has_loot == 1 then
@@ -524,4 +531,14 @@ function AutoRoll:PrintAllShareStatus(info)
 	for i in pairs(self.db.profile.share) do
 		self:PrintShareStatus({["arg"]=i})
 	end
+end
+
+function AutoRoll:GetItemGroupDb(itemGroupName)
+	return self.db.profile[itemGroupName]
+end
+
+
+function AutoRoll:isItemGroupDisabled(info)
+	if info[1] == "itemGroups" then return true end
+	return false
 end

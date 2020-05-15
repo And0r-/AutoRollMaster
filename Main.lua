@@ -95,10 +95,25 @@ local dbDefaults = {
 	},
 }
 
+function Copy_Table(src, dest)
+	for index, value in pairs(src) do
+		if type(value) == "table" then
+			dest[index] = {}
+			Copy_Table(value, dest[index])
+		else
+			dest[index] = value
+		end
+	end
+end
+
 function AutoRoll:OnInitialize()
     -- Called when the addon is loaded
     self:RegisterChatCommand("rl", function() ReloadUI() end)
     self:loadDb()
+
+    Copy_Table(self.db.profile.itemGroups, self.db.profile.itemGroupsRaid)
+
+
     self:refreshOptions()
     self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("AutoRoll3000", "AutoRoll3000")
     self:RegisterChatCommand("ar3", "ChatCommand")
