@@ -539,6 +539,6 @@ end
 
 
 function AutoRoll:isItemGroupDisabled(info)
-	if info[1] == "itemGroups" then return true end
+	if info[1] == "itemGroupsRaid" then return true end
 	return false
 end
