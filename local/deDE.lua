@@ -69,10 +69,10 @@ L["share active desc"] = "In gruppe Aufteilen"
 L["itemGroup name"] = "Gruppen Name"
 
 L["conditions"] = "Regeln"
-L["conditions desc"] = "Bedingungen damit die Gruppe zum einsatz kommt"
+L["conditions desc"] = "Bedingungen damit die Gruppe zum Einsatz kommt"
 
 
-L["auto roll"] = "Automatisch Würfeln:"
+L["auto roll"] = "Automatisch Würfeln"
 L["auto roll desc"] = "Gibt an was mit den Items geschehen soll, welche alle Regeln erfüllen."
 
 L["add group"] = "Gruppe hinzufügen"

@@ -145,9 +145,18 @@ function AutoRoll:GetOptionItemGroups()
 			width = "full",
 			order  = itemGroupId,
 			args = {
+				description = {
+					name = L["itemGroup name"],
+					type = "input",
+					order = 0,
+					get = "getItemGroupDescription",
+					set = "setItemGroupDescription",
+					arg = itemGroupId,
+					width = "full",
+				},
 				enabled = {
-					name = "Aktiv",
-					desc = "Regel Gruppe ist Aktiv",
+					name = L["itemGroup activ"],
+					desc = L["itemGroup activ desc"],
 					type = "toggle",
 					order = 1,
 					get = "IsItemGroupEnabled",
@@ -163,27 +172,17 @@ function AutoRoll:GetOptionItemGroups()
 					set = "ToggleItemGroupShareEnabled",
 					arg = itemGroupId,
 				},
-				shareOptions = self:GetItemGroupShareOptions(itemGroupId), 
-				description = {
-					name = L["itemGroup name"],
-					type = "input",
-					order = 0,
-					get = "getItemGroupDescription",
-					set = "setItemGroupDescription",
-					arg = itemGroupId,
+				
+				shareOptions = self:GetItemGroupShareOptions(itemGroupId, 3), 
+
+				newline1 = {
+					name = "",
+					type = "description",
 					width = "full",
-				},
-				conditions = {
-					name = L["conditions"],
-					desc = L["conditions desc"],
-					type = "group",
 					order = 4,
-					inline = true,
-					width = "full",
-					args = self:GetOptionItemGroupConditions(itemGroupId),
 				},
 				rs = {
-      				name = L["auto roll"],
+      				name = L["auto roll"]..":",
       				desc = L["auto roll desc"],
       				type = "select",
       				order = 6,
@@ -193,6 +192,15 @@ function AutoRoll:GetOptionItemGroups()
       				style = "dropdown",
       				arg = itemGroupId,
     			},
+    			conditions = {
+					name = L["conditions"],
+					desc = L["conditions desc"],
+					type = "group",
+					order = 7,
+					inline = true,
+					width = "full",
+					args = self:GetOptionItemGroupConditions(itemGroupId),
+				},
 			}
 		};
 	end
@@ -209,12 +217,12 @@ function AutoRoll:GetOptionItemGroups()
 	return itemGroups;
 end
 
-function AutoRoll:GetItemGroupShareOptions(itemGroupId)
+function AutoRoll:GetItemGroupShareOptions(itemGroupId, order)
 	return {
 		name = "",
 		type = "group",
 		width = "full",
-		order  = 3,
+		order  = order,
 		hidden = self:IsItemGroupShareEnabled({["arg"]=itemGroupId}) == false,
 		args = {
 			description = {
