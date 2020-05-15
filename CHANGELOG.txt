@@ -1,5 +1,15 @@
+0.4.0:
+- Fix some translations bugs
+- Little gui changes
+- add english translations
+
+0.3.0:
+- Changing the version number to release.beta.alpha counter. So 0.3.0 is the 3 beta version from release 0
+- Translations, now the most is available in germen and english and everyone can add more translations on courseforge
+- fix a bad bug on the share option. Share was on each group everytime active
+
 0.1Beta2:
-Some smal fixes on the packageing and adding this changelog
+- Some little fixes on the packageing and adding this changelog
 
 0.1Beta1:
-Yea I have extract the AutoRoll Modul from my other Addon: https://www.curseforge.com/wow/addons/fdh-raid-tool
+- Yea I have extract the AutoRoll Modul from my other Addon: https://www.curseforge.com/wow/addons/fdh-raid-tool
