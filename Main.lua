@@ -121,6 +121,7 @@ function AutoRoll:OnEnable()
     self:RegisterEvent("START_LOOT_ROLL")
     self:RegisterEvent("LOOT_HISTORY_ROLL_COMPLETE")
 
+
     self:checkItemGroupPointer()
     -- Register AutoRoll db on Core addon, and set only the scope to this addon db. So profile reset works fine for all the addons.
     --self.db = FdHrT:AddAddonDBDefaults(dbDefaults).profile.AutoRoll;
@@ -217,17 +218,33 @@ function AutoRoll:CheckRoll(itemInfo)
 	end
 end
 
+-- /ar3
 -- /run AutoRoll:reciveItemGroupRaid()
+-- /run AutoRoll:checkItemGroupPointer()
+
 function AutoRoll:reciveItemGroupRaid()
     -- simulate a recive from a raid itemGroup
     Copy_Table(self.db.profile.itemGroups, self.db.profile.itemGroupsRaid)
     self.db.profile.itemGroupsRaid.share = {}
     self:setItemGroupPointer("itemGroupsRaid")
+
+    -- recive raid config when you are not in a group make no sence but better check it here
+    self:checkItemGroupPointer()
 end
 
 function AutoRoll:setItemGroupPointer(value)
+	if value == "itemGroupsRaid" then 
+		self:RegisterEvent("GROUP_ROSTER_UPDATE") 
+	else
+		self:UnregisterEvent("GROUP_ROSTER_UPDATE") 
+	end
+
 	self.db.profile.itemGroupsPointer = value
 	self:refreshOptions();
+end
+
+function AutoRoll:GROUP_ROSTER_UPDATE()
+	self:checkItemGroupPointer();
 end
 
 function AutoRoll:getItemGroupPointer()
