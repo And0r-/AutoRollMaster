@@ -476,13 +476,13 @@ function AutoRoll:ToggleGuildItemGroupsEnabled(info, value)
 	self.db.profile.guildItemGroupsEnabled = value
 end
 
-function AutoRoll:IssavedItemsEnabled(info)
-	return self.db.profile.savedItemsEnabled
-end
+-- function AutoRoll:IssavedItemsEnabled(info)
+-- 	return self.db.profile.savedItemsEnabled
+-- end
 
-function AutoRoll:TogglesavedItemsEnabled(info, value)
-	self.db.profile.savedItemsEnabled = value
-end
+-- function AutoRoll:TogglesavedItemsEnabled(info, value)
+-- 	self.db.profile.savedItemsEnabled = value
+-- end
 
 
 

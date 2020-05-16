@@ -22,75 +22,75 @@ local GetPlayerInfo = C_LootHistory.GetPlayerInfo
 
 local dbDefaults = {
 	profile = {
-			enabled = true, -- the addon self is enabled per default
-			guildItemGroupsEnabled = true, -- use a group config to auto roll in a raid from a guild leader
-			savedItemsEnabled = true, -- add the options to store 
-			profileItemGroupsEnabled = false, -- on default it should not use any ItemGroups to auto roll.
+		enabled = true, -- the addon self is enabled per default
+		guildItemGroupsEnabled = true, -- use a group config to auto roll in a raid from a guild leader
+		--savedItemsEnabled = true, -- add the options to store 
+		profileItemGroupsEnabled = false, -- on default it should not use any ItemGroups to auto roll.
 
-			savedItems = { -- it will be possible to remember the decision on the roll frame. this is stored here
-				--[19698] = 0,
+		-- savedItems = { -- it will be possible to remember the decision on the roll frame. this is stored here
+		-- 	--[19698] = 0,
+		-- },
+
+		itemGroupsRaid = {
+			raidSize = nil, -- When i get a itemGroupsRaid ruleset for a raid store here the group size. when the group size will be smaler then 40% or less then 2 i know the raid is finish and the itemGroupsRaid will be deleted. 
+		}, -- here are the groups stored you recive from raid lead
+		itemGroups = { -- When not stored in the savedItems it will check the items groups
+			--thank you lua for your ugly mixed aray hash disaster...
+			rolls = {}, -- data about current rolls with share function, when this rollId is finished we have to check do we have won the item. and update the itemgroup share data. rolls[rollId] = itemGroupId
+			share = {}, -- round robin data of all groups. e.g: share[itemGroupId].loot_counter 
+			{
+				description = L["ZG coin desc"],
+				enabled = true,
+				share = {
+					enabled = true,
+					size = "raid"
+				},
+				rollOptionSuccsess = 2,
+				conditions = {
+					[1] = {
+						type = "item",
+						args = {"19698,19699,19700,19701,19702,19703,19704,19705,19706"},
+					}
+				},
 			},
-
-			itemGroupsRaid = {
-				raidSize = nil, -- When i get a itemGroupsRaid ruleset for a raid store here the group size. when the group size will be smaler then 40% or less then 2 i know the raid is finish and the itemGroupsRaid will be deleted. 
-			}, -- here are the groups stored you recive from raid lead
-			itemGroups = { -- When not stored in the savedItems it will check the items groups
-				--thank you lua for your ugly mixed aray hash disaster...
-				rolls = {}, -- data about current rolls with share function, when this rollId is finished we have to check do we have won the item. and update the itemgroup share data. rolls[rollId] = itemGroupId
-				share = {}, -- round robin data of all groups. e.g: share[itemGroupId].loot_counter 
-				{
-					description = L["ZG coin desc"],
+			{
+				description = L["ZB bijous desc"],
+				enabled = true,
+				share = {
 					enabled = true,
-					share = {
-						enabled = true,
-						size = "raid"
-					},
-					rollOptionSuccsess = 2,
-					conditions = {
-						[1] = {
-							type = "item",
-							args = {"19698,19699,19700,19701,19702,19703,19704,19705,19706"},
-						}
-					},
 				},
-				{
-					description = L["ZB bijous desc"],
-					enabled = true,
-					share = {
-						enabled = true,
-					},
-					rollOptionSuccsess = 2,
-					conditions = {
-						[1] = {
-							type = "item",
-							args = {"19707,19708,19709,19710,19711,19712,19713,19714,19715"},
-						}
-					},
+				rollOptionSuccsess = 2,
+				conditions = {
+					[1] = {
+						type = "item",
+						args = {"19707,19708,19709,19710,19711,19712,19713,19714,19715"},
+					}
 				},
-				{ -- 
-					description = L["all green items"],
-					enabled = false, 
-					share = {
-						enabled = false,
-					},
-					rollOptionSuccsess = 0,
-					conditions = {
-						[1] = {
-							type = "quality",
-							args = {
-								"<=", 
-								3, --0 - Poor, 1 - Common, 2 - Uncommon, 3 - Rare, 4 - Epic, 5 - Legendary, 6 - Artifact, 7 - Heirloom, 8 - WoW Token
-							}, 
-						}
-						-- the following conditions are not implemented yet, and only a hint for me
-						-- dungeon = 309, -- condition work only in ZG
-						-- inGroupWith = {
-						--		"oneOf", "Player1,Player2,Player3",
-						--		"allOf", "Player1,Player2,Player3",
-						-- }, 
-						-- perhaps i add a lua solution to, we will see
-					},
+			},
+			{ -- 
+				description = L["all green items"],
+				enabled = false, 
+				share = {
+					enabled = false,
 				},
+				rollOptionSuccsess = 0,
+				conditions = {
+					[1] = {
+						type = "quality",
+						args = {
+							"<=", 
+							3, --0 - Poor, 1 - Common, 2 - Uncommon, 3 - Rare, 4 - Epic, 5 - Legendary, 6 - Artifact, 7 - Heirloom, 8 - WoW Token
+						}, 
+					}
+					-- the following conditions are not implemented yet, and only a hint for me
+					-- dungeon = 309, -- condition work only in ZG
+					-- inGroupWith = {
+					--		"oneOf", "Player1,Player2,Player3",
+					--		"allOf", "Player1,Player2,Player3",
+					-- }, 
+					-- perhaps i add a lua solution to, we will see
+				},
+			},
 		},
 	},
 }
