@@ -111,10 +111,6 @@ function AutoRoll:OnInitialize()
     self:RegisterChatCommand("rl", function() ReloadUI() end)
     self:loadDb()
 
-    -- simulate a recive from a raid itemGroup
-    Copy_Table(self.db.profile.itemGroups, self.db.profile.itemGroupsRaid)
-
-
     self:refreshOptions()
     self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("AutoRoll3000", "AutoRoll3000")
     self:RegisterChatCommand("ar3", "ChatCommand")
@@ -124,6 +120,8 @@ function AutoRoll:OnEnable()
     -- Called when the addon is enabled
     self:RegisterEvent("START_LOOT_ROLL")
     self:RegisterEvent("LOOT_HISTORY_ROLL_COMPLETE")
+
+    self:checkItemGroupPointer()
     -- Register AutoRoll db on Core addon, and set only the scope to this addon db. So profile reset works fine for all the addons.
     --self.db = FdHrT:AddAddonDBDefaults(dbDefaults).profile.AutoRoll;
 
@@ -219,12 +217,37 @@ function AutoRoll:CheckRoll(itemInfo)
 	end
 end
 
+-- /run AutoRoll:reciveItemGroupRaid()
+function AutoRoll:reciveItemGroupRaid()
+    -- simulate a recive from a raid itemGroup
+    Copy_Table(self.db.profile.itemGroups, self.db.profile.itemGroupsRaid)
+    self.db.profile.itemGroupsRaid.share = {}
+    self:setItemGroupPointer("itemGroupsRaid")
+end
+
 function AutoRoll:setItemGroupPointer(value)
 	self.db.profile.itemGroupsPointer = value
+	self:refreshOptions();
 end
 
 function AutoRoll:getItemGroupPointer()
 	return self.db.profile.itemGroupsPointer
+end
+
+function AutoRoll:checkItemGroupPointer()
+	local itemGroups = self:getItemGroupPointer()
+	if itemGroups == "itemGroups" then return end
+
+	if itemGroups == "itemGroupsRaid" then
+		-- Curent itemGroup is for a raid. check are we allready in this group
+		if self.db.profile[itemGroups].raidSize ~= nill and (self.db.profile[itemGroups].raidSize / 2) < GetNumGroupMembers() then
+			-- group looks ok for raid ruls
+			return 
+		end
+	end
+	-- no working itemGroups detected. set to default
+	self:Print(L["switch to default rules"])
+	self:setItemGroupPointer("itemGroups")
 end
 
 

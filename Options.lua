@@ -52,6 +52,7 @@ function AutoRoll:GetOptions()
 				name = "Raid rules",
 				type = "group",
 				order = 2,
+				hidden = "isItemGropsRaidHidden",
 				args = self:GetOptionItemGroups("itemGroupsRaid"),
 		    },
 			debug = {
@@ -62,6 +63,10 @@ function AutoRoll:GetOptions()
 		    },
       	},
 	}
+end
+
+function AutoRoll:isItemGropsRaidHidden(info)
+	return self:getItemGroupPointer() ~= "itemGroupsRaid"
 end
 
 function AutoRoll:GetOptionSettings()
@@ -401,7 +406,9 @@ end
 
 function AutoRoll:refreshOptions()
 	local options = self:GetOptions();
+	if options.args.itemGroupsRaid.hidden == false then self:Print("Raid is not hidden :)") end
 	options.args.profiles = self.profilOptions
+	LibStub("AceConfigRegistry-3.0"):NotifyChange("AutoRoll3000")
     LibStub("AceConfig-3.0"):RegisterOptionsTable("AutoRoll3000", options)
 end
 

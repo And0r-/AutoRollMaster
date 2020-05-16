@@ -102,4 +102,7 @@ L["round"] = "Runde"
 L["total won"] = "Total gewonnen"
 
 
+L["switch to default rules"] = "Raid hat sich aufgelöst, wechsle zu den eigenen Regeln"
+
+
 --@end-do-not-package@
