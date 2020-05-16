@@ -194,21 +194,16 @@ function AutoRoll:CheckRoll(itemInfo)
 	if self.db.profile.enabled == false then return false end
 	local currentItemGroupId
 
-	-- if raiditem then
-	-- 	if raidItemGroupsEnabled and self:isRaidItemGroup then
-	-- 		currentItemGroupId = self:findGroup(itemInfo,self.db.profile.itemGroupsRaid);
-	-- 		if currentItemGroupId then currentItemGroup = self.db.profile.itemGroupsRaid[currentItemGroupId] end
-	-- 	end
-	-- else
-		if self.db.profile.profileItemGroupsEnabled then
-			currentItemGroupId = self:findGroup(itemInfo,self.db.profile.itemGroups);
+		if 
+			(self:getItemGroupPointer() == "itemGroupsRaid" and self.db.profile.guildItemGroupsEnabled) or 
+			(self:getItemGroupPointer() == "itemGroups" and self.db.profile.profileItemGroupsEnabled) then
+			currentItemGroupId = self:findGroup(itemInfo,self.db.profile[self:getItemGroupPointer()]);
 		end
-	-- end
 
 	-- no active itemGroup found for this roll window, abort
 	if currentItemGroupId == nil then return false end
 
-	local currentItemGroup = self.db.profile.itemGroups[currentItemGroupId]
+	local currentItemGroup = self.db.profile[self:getItemGroupPointer()][currentItemGroupId]
 
 	if currentItemGroup.share.enabled then
 		-- round robin mode. only roll when player not have more then the other from currentItemGroupId.
@@ -398,7 +393,7 @@ function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
 		sharedata.loot_counter = 0;
 		sharedata.has_loot = sharedata.has_loot -1;
 		sharedata.loot_round = sharedata.loot_round +1;
-		self:Print(L["All player has a"].." "..self.db.profile.itemGroups[currentItemGroupId].description..". "..L["Start a new round"]);
+		self:Print(L["All player has a"].." "..self.db.profile[self:getItemGroupPointer()][currentItemGroupId].description..". "..L["Start a new round"]);
 	end
 end
 
