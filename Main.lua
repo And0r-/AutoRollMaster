@@ -1,7 +1,6 @@
 local AutoRoll = LibStub("AceAddon-3.0"):NewAddon("FdHrT_AutoRoll", "AceConsole-3.0", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
-AutoRoll.sharedata = {} --
 -- @todo:  save this in AutoRoll, to not have dublications...
 AutoRoll.rollOptions = {[0]=L["Pass"], [1]=L["Need"], [2]=L["Greed"]}
 AutoRoll.itemQuality = {[2]=L["uncommon"], [3]=L["rare"], [4]=L["epic"], [5]=L["legendary"], [6]=L["artifact"]}
@@ -23,9 +22,6 @@ local GetPlayerInfo = C_LootHistory.GetPlayerInfo
 
 local dbDefaults = {
 	profile = {
-	--	AutoRoll = {
-			rolls = {}, -- data about current rolls with share function, when this rollId is finished we have to check do we have won the item. and update the itemgroup share data. rolls[rollId] = itemGroupId
-			share = {}, -- round robin data of all groups. e.g: share[itemGroupId].loot_counter 
 			enabled = true, -- the addon self is enabled per default
 			guildItemGroupsEnabled = true, -- use a group config to auto roll in a raid from a guild leader
 			savedItemsEnabled = true, -- add the options to store 
@@ -34,9 +30,14 @@ local dbDefaults = {
 			savedItems = { -- it will be possible to remember the decision on the roll frame. this is stored here
 				--[19698] = 0,
 			},
-			raidSize = nil, -- When i get a itemGroupsRaid ruleset for a raid store here the group size. when the group size will be smaler then 40% or less then 2 i know the raid is finish and the itemGroupsRaid will be deleted. 
-			itemGroupsRaid = {}, -- here are the groups stored you recive from raid lead
+
+			itemGroupsRaid = {
+				raidSize = nil, -- When i get a itemGroupsRaid ruleset for a raid store here the group size. when the group size will be smaler then 40% or less then 2 i know the raid is finish and the itemGroupsRaid will be deleted. 
+			}, -- here are the groups stored you recive from raid lead
 			itemGroups = { -- When not stored in the savedItems it will check the items groups
+				--thank you lua for your ugly mixed aray hash disaster...
+				rolls = {}, -- data about current rolls with share function, when this rollId is finished we have to check do we have won the item. and update the itemgroup share data. rolls[rollId] = itemGroupId
+				share = {}, -- round robin data of all groups. e.g: share[itemGroupId].loot_counter 
 				{
 					description = L["ZG coin desc"],
 					enabled = true,
@@ -90,7 +91,6 @@ local dbDefaults = {
 						-- perhaps i add a lua solution to, we will see
 					},
 				},
-			--},
 		},
 	},
 }
@@ -111,6 +111,7 @@ function AutoRoll:OnInitialize()
     self:RegisterChatCommand("rl", function() ReloadUI() end)
     self:loadDb()
 
+    -- simulate a recive from a raid itemGroup
     Copy_Table(self.db.profile.itemGroups, self.db.profile.itemGroupsRaid)
 
 
@@ -218,6 +219,10 @@ function AutoRoll:CheckRoll(itemInfo)
 	end
 end
 
+function AutoRoll:itemGroupPointer()
+	return self.db.profile.itemGroups
+end
+
 -- Raid lead can shere a itemGroup to all raid members with this addon. this temporary itemGroup should work until the end of the dungeon.
 -- function AutoRoll:isRaidItemGroup()
 -- 	-- There are no dungeon session id, so i have to track self is it the same group
@@ -294,9 +299,9 @@ end
 
 -- a little bit messy at the moment, 
 function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
-	self.db.profile.rolls[itemInfo.rollId] = currentItemGroupId;
-	if self.db.profile.share[currentItemGroupId] == nil then self:initShare(currentItemGroupId) end
- 	local sharedata = self.db.profile.share[currentItemGroupId];
+	self:itemGroupPointer().rolls[itemInfo.rollId] = currentItemGroupId;
+	if self:itemGroupPointer().share[currentItemGroupId] == nil then self:initShare(currentItemGroupId) end
+ 	local sharedata = self:itemGroupPointer().share[currentItemGroupId];
 
 	sharedata.loot_counter = sharedata.loot_counter +1;
 	sharedata.party_member = GetNumGroupMembers(); -- it is possible that one of the group do not want any zg coins. so we need a option later to change the party_member size by hand...
@@ -319,7 +324,7 @@ function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
 end
 
 function AutoRoll:initShare(currentItemGroupId)
-	self.db.profile.share[currentItemGroupId] = {
+	self:itemGroupPointer().share[currentItemGroupId] = {
 		loot_counter = 0,
 		has_loot = 0,
 		loot_round = 1,
@@ -336,8 +341,8 @@ end
 
 -- /run AutoRoll:rollItemWon(1)
 function AutoRoll:rollItemWon(rollId)
-	if self.db.profile.rolls[rollId] then
-		local sharedata = self.db.profile.share[self.db.profile.rolls[rollId]]
+	if self:itemGroupPointer().rolls[rollId] then
+		local sharedata = self:itemGroupPointer().share[self:itemGroupPointer().rolls[rollId]]
 		sharedata.has_loot = sharedata.has_loot +1;
 		sharedata.has_won_total = sharedata.has_won_total +1;
 	end
@@ -355,7 +360,7 @@ function AutoRoll:LOOT_HISTORY_ROLL_COMPLETE()
 		rollId, _, players, done = C_LootHistory.GetItem(hid);
 		if not rollId then
 			return
-		elseif done and self.db.profile.rolls[rollId] then
+		elseif done and self:itemGroupPointer().rolls[rollId] then
 			-- found it...
 			--print(rollId.." abgeschlossen ");
 			break
@@ -376,7 +381,7 @@ function AutoRoll:LOOT_HISTORY_ROLL_COMPLETE()
 		end
 	end
 
-	self.db.profile.rolls[rollId] = nil -- ignore this rollId in the history data next time
+	self:itemGroupPointer().rolls[rollId] = nil -- ignore this rollId in the history data next time
 end
 
 
