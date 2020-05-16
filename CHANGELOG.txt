@@ -1,3 +1,6 @@
+0.4.1:
+- Now it is possible tha anyone send his config to the complet raid. This raid config will disapeare when the group size shrink more then 50%
+
 0.4.0:
 - Fix some translations bugs
 - Little gui changes
