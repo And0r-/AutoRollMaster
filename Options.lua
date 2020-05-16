@@ -504,16 +504,16 @@ end
 	if info.arg then
 		-- reset share loot from this itemGroupId
 		self:Print("Resette share von itemGroup: ".. info.arg)
-		self:itemGroupPointer().share[info.arg] = {}
+		self.db.profile[self:getItemGroupPointer()].share[info.arg] = {}
 	else
 		-- reset all share loots!
 		self:Print("Resette alle share daten")
-		self:itemGroupPointer().share = {}
+		self.db.profile[self:getItemGroupPointer()].share = {}
 	end
 end
 
 function AutoRoll:PrintShareStatus(info)
-	local sharedata = self:itemGroupPointer().share[info.arg]
+	local sharedata = self.db.profile[self:getItemGroupPointer()].share[info.arg]
 
 	self:Print(self:GetItemGroupDb(info[1])[info.arg].description)
 	self:Print(sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
@@ -528,8 +528,8 @@ function AutoRoll:PrintShareStatus(info)
 end
 
 function AutoRoll:PrintAllShareStatus(info)
-	for i in pairs(self:itemGroupPointer().share) do
-		self:PrintShareStatus({["arg"]=i})
+	for i in pairs(self.db.profile[self:getItemGroupPointer()].share) do
+		self:PrintShareStatus({[1]=self:getItemGroupPointer(), ["arg"]=i})
 	end
 end
 

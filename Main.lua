@@ -219,9 +219,15 @@ function AutoRoll:CheckRoll(itemInfo)
 	end
 end
 
-function AutoRoll:itemGroupPointer()
-	return self.db.profile.itemGroups
+function AutoRoll:setItemGroupPointer(value)
+	self.db.profile.itemGroupsPointer = value
 end
+
+function AutoRoll:getItemGroupPointer()
+	return self.db.profile.itemGroupsPointer
+end
+
+
 
 -- Raid lead can shere a itemGroup to all raid members with this addon. this temporary itemGroup should work until the end of the dungeon.
 -- function AutoRoll:isRaidItemGroup()
@@ -299,9 +305,9 @@ end
 
 -- a little bit messy at the moment, 
 function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
-	self:itemGroupPointer().rolls[itemInfo.rollId] = currentItemGroupId;
-	if self:itemGroupPointer().share[currentItemGroupId] == nil then self:initShare(currentItemGroupId) end
- 	local sharedata = self:itemGroupPointer().share[currentItemGroupId];
+	self.db.profile[self:getItemGroupPointer()].rolls[itemInfo.rollId] = currentItemGroupId;
+	if self.db.profile[self:getItemGroupPointer()].share[currentItemGroupId] == nil then self:initShare(currentItemGroupId) end
+ 	local sharedata = self.db.profile[self:getItemGroupPointer()].share[currentItemGroupId];
 
 	sharedata.loot_counter = sharedata.loot_counter +1;
 	sharedata.party_member = GetNumGroupMembers(); -- it is possible that one of the group do not want any zg coins. so we need a option later to change the party_member size by hand...
@@ -324,7 +330,7 @@ function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
 end
 
 function AutoRoll:initShare(currentItemGroupId)
-	self:itemGroupPointer().share[currentItemGroupId] = {
+	self.db.profile[self:getItemGroupPointer()].share[currentItemGroupId] = {
 		loot_counter = 0,
 		has_loot = 0,
 		loot_round = 1,
@@ -341,8 +347,8 @@ end
 
 -- /run AutoRoll:rollItemWon(1)
 function AutoRoll:rollItemWon(rollId)
-	if self:itemGroupPointer().rolls[rollId] then
-		local sharedata = self:itemGroupPointer().share[self:itemGroupPointer().rolls[rollId]]
+	if self.db.profile[self:getItemGroupPointer()].rolls[rollId] then
+		local sharedata = self.db.profile[self:getItemGroupPointer()].share[self.db.profile[self:getItemGroupPointer()].rolls[rollId]]
 		sharedata.has_loot = sharedata.has_loot +1;
 		sharedata.has_won_total = sharedata.has_won_total +1;
 	end
@@ -360,7 +366,7 @@ function AutoRoll:LOOT_HISTORY_ROLL_COMPLETE()
 		rollId, _, players, done = C_LootHistory.GetItem(hid);
 		if not rollId then
 			return
-		elseif done and self:itemGroupPointer().rolls[rollId] then
+		elseif done and self.db.profile[self:getItemGroupPointer()].rolls[rollId] then
 			-- found it...
 			--print(rollId.." abgeschlossen ");
 			break
@@ -381,7 +387,7 @@ function AutoRoll:LOOT_HISTORY_ROLL_COMPLETE()
 		end
 	end
 
-	self:itemGroupPointer().rolls[rollId] = nil -- ignore this rollId in the history data next time
+	self.db.profile[self:getItemGroupPointer()].rolls[rollId] = nil -- ignore this rollId in the history data next time
 end
 
 
