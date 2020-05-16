@@ -1,4 +1,4 @@
-local AutoRoll = LibStub("AceAddon-3.0"):NewAddon("FdHrT_AutoRoll", "AceConsole-3.0", "AceEvent-3.0")
+local AutoRoll = LibStub("AceAddon-3.0"):NewAddon("FdHrT_AutoRoll", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceSerializer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
 -- @todo:  save this in AutoRoll, to not have dublications...
@@ -121,6 +121,8 @@ function AutoRoll:OnEnable()
     self:RegisterEvent("START_LOOT_ROLL")
     self:RegisterEvent("LOOT_HISTORY_ROLL_COMPLETE")
 
+    self:RegisterComm("ar3")
+
 
     self:checkItemGroupPointer()
     -- Register AutoRoll db on Core addon, and set only the scope to this addon db. So profile reset works fine for all the addons.
@@ -219,17 +221,48 @@ function AutoRoll:CheckRoll(itemInfo)
 end
 
 -- /ar3
--- /run AutoRoll:reciveItemGroupRaid()
+-- /run AutoRoll:SendRaidConfig()
+-- /run AutoRoll:installItemGroupRaidFromItemGroups()
 -- /run AutoRoll:checkItemGroupPointer()
 
-function AutoRoll:reciveItemGroupRaid()
+function AutoRoll:installItemGroupRaidFromItemGroups()
+	local itemGroupsRaid = {}
+	Copy_Table(self.db.profile.itemGroups, itemGroupsRaid)
+	itemGroupsRaid.raidSize = GetNumGroupMembers()
+
+	self:installItemGroupRaid(itemGroupsRaid)
+end
+
+function AutoRoll:installItemGroupRaid(itemGroupsRaid)
     -- simulate a recive from a raid itemGroup
-    Copy_Table(self.db.profile.itemGroups, self.db.profile.itemGroupsRaid)
+    self.db.profile.itemGroupsRaid = itemGroupsRaid
+
+    -- share reset
     self.db.profile.itemGroupsRaid.share = {}
+
+    -- switch to Raid config
     self:setItemGroupPointer("itemGroupsRaid")
 
     -- recive raid config when you are not in a group make no sence but better check it here
     self:checkItemGroupPointer()
+end
+
+function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
+	local LibDeflate = LibStub:GetLibrary("LibDeflate")
+	local ctext = LibDeflate:DecodeForWoWAddonChannel(message)
+	local text = LibDeflate:DecompressDeflate(ctext)
+
+	local _,itemGroupsRaid = self:Deserialize(text)
+	self:installItemGroupRaid(itemGroupsRaid)
+end
+
+function AutoRoll:SendRaidConfig()
+	self:installItemGroupRaidFromItemGroups()
+	local LibDeflate = LibStub:GetLibrary("LibDeflate")
+	local s = self:Serialize(self.db.profile.itemGroupsRaid)
+	local cs = LibDeflate:CompressDeflate(s)
+	cs = LibDeflate:EncodeForWoWAddonChannel(cs)
+	self:SendCommMessage("ar3", cs, "RAID", "", "BULK")
 end
 
 function AutoRoll:setItemGroupPointer(value)

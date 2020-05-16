@@ -101,6 +101,17 @@ function AutoRoll:GetOptionSettings()
 		},
 		-- show a short enable disable list for the itemGroups when enabled. disable advanced tab when not enabled.
 
+
+
+		send2raid = {
+			name = L["send rules to raid"],
+			desc = L["send rules to raid desc"],
+			type = "execute",
+			order = -1,
+			func = "SendRaidConfig",
+		},
+
+
 	}
 end
 

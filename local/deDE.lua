@@ -104,5 +104,8 @@ L["total won"] = "Total gewonnen"
 
 L["switch to default rules"] = "Raid hat sich aufgelöst, wechsle zu den eigenen Regeln"
 
+L["send rules to raid"] = "Regeln an Raid senden"
+L["send rules to raid desc"] = "Sendet deine Regeln an allen im Raid die das Addon haben."
+
 
 --@end-do-not-package@

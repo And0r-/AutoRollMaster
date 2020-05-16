@@ -106,6 +106,10 @@ L["entitlement to x, will roll next time"] = "item/s. Rolling on the next."
 L["round"] = "Round"
 L["total won"] = "Total won"
 
+L["switch to default rules"] = "Raid has broken up, switch to your own rules"
+
+L["send rules to raid"] = "send rules to raid"
+L["send rules to raid desc"] = "Send your own rules to all in raid that have this addon"
 
 
 --@end-do-not-package@
