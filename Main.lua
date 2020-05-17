@@ -125,6 +125,19 @@ function AutoRoll:OnEnable()
 
 
     self:checkItemGroupPointer()
+
+    StaticPopupDialogs["CONFIRM_RECIVE_CONFIG"] = {
+		text = "%s send you a AutoRoll3000 config for this raid. install it?",
+		button1 = "Yes",
+		button2 = "No",
+		OnAccept = function(self, config)
+		  AutoRoll:installItemGroupRaid(config)
+		end,
+		timeout = 10,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+	}
     -- Register AutoRoll db on Core addon, and set only the scope to this addon db. So profile reset works fine for all the addons.
     --self.db = FdHrT:AddAddonDBDefaults(dbDefaults).profile.AutoRoll;
 
@@ -228,6 +241,16 @@ function AutoRoll:installItemGroupRaidFromItemGroups()
 	self:installItemGroupRaid(itemGroupsRaid)
 end
 
+function AutoRoll:ReciveItemGroupRaid(itemGroupsRaidMessage)
+	local LibDeflate = LibStub:GetLibrary("LibDeflate")
+	local ctext = LibDeflate:DecodeForWoWAddonChannel(itemGroupsRaidMessage)
+	local text = LibDeflate:DecompressDeflate(ctext)
+
+	local _,itemGroupsRaid = self:Deserialize(text)
+
+	self:installItemGroupRaid(itemGroupsRaid)
+end
+
 function AutoRoll:installItemGroupRaid(itemGroupsRaid)
     -- simulate a recive from a raid itemGroup
     self.db.profile.itemGroupsRaid = itemGroupsRaid
@@ -243,12 +266,14 @@ function AutoRoll:installItemGroupRaid(itemGroupsRaid)
 end
 
 function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
-	local LibDeflate = LibStub:GetLibrary("LibDeflate")
-	local ctext = LibDeflate:DecodeForWoWAddonChannel(message)
-	local text = LibDeflate:DecompressDeflate(ctext)
 
-	local _,itemGroupsRaid = self:Deserialize(text)
-	self:installItemGroupRaid(itemGroupsRaid)
+
+	self:confirmRaidConfigRecive(message, sender)
+end
+
+function AutoRoll:confirmRaidConfigRecive(itemGroups, playerName)
+	local dialog = StaticPopup_Show ("CONFIRM_RECIVE_CONFIG", playerName)
+	dialog.data = itemGroups
 end
 
 function AutoRoll:SendRaidConfig()
@@ -457,7 +482,3 @@ function AutoRoll:LOOT_HISTORY_ROLL_COMPLETE()
 
 	self.db.profile[self:getItemGroupPointer()].rolls[rollId] = nil -- ignore this rollId in the history data next time
 end
-
-
-
-
