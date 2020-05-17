@@ -286,6 +286,7 @@ function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
 
 	-- check should we do the command or is a user confirm required
 	-- @Todo: user GetGuildInfo to check is the sender in my guild
+	-- @Todo: check is it possible to fake the sender
 	if self.db.profile.guildItemGroupsEnabled and (UnitIsGroupAssistant(sender) or UnitIsGroupLeader(sender)) then
 		-- install/remove Raid Rules
 		if prefix == "ar3_rc" then
@@ -300,13 +301,11 @@ function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
 		elseif prefix == "ar3_rmc" then
 			self:confirmRemoveRaidConfig(sender)
 		end
-		
 	end
 end
 
 function AutoRoll:confirmRemoveRaidConfig(playerName)
 	StaticPopup_Show("CONFIRM_REMOVE_CONFIG_AR3", playerName)
-	
 end
 
 function AutoRoll:confirmRaidConfigRecive(itemGroups, playerName)
