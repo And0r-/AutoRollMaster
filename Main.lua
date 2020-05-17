@@ -328,6 +328,7 @@ function AutoRoll:SendRaidConfig()
 end
 
 function AutoRoll:SendRaidConfigRemove()
+	self:setItemGroupPointer("itemGroups")
 	self:SendCommMessage("ar3_rmc", "remove raid config", "RAID", "", "BULK")
 end
 

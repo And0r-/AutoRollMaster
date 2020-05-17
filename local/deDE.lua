@@ -64,7 +64,7 @@ L["itemGroup activ"] = "Aktiv"
 L["itemGroup activ desc"] = "Regel Gruppe ist Aktiv"
 
 L["share active"] = "Aufteilen"
-L["share active desc"] = "In gruppe Aufteilen"
+L["share active desc"] = "Jeder in der Gruppe erhält gleich viele"
 
 L["itemGroup name"] = "Gruppen Name"
 
@@ -104,8 +104,16 @@ L["total won"] = "Total gewonnen"
 
 L["switch to default rules"] = "Raid hat sich aufgelöst, wechsle zu den eigenen Regeln"
 
-L["send rules to raid"] = "Raid Regeln an Gruppe senden"
-L["send rules to raid desc"] = "Sendet deine Regeln an allen im Raid die das Addon haben."
+
+L["raid tools desc"] = "Hier kann man seine Regeln für diesen Raid an alle in der Gruppe senden.\rRegeln ändern geht danach aber erst nach dem Raid wieder!"
+
+L["send rules to raid"] = "Raid Start"
+L["send rules to raid desc"] = "Sendet deine Regeln an allen im Raid die das Addon haben. Regeln können danach erst wieder bearbeitet werden, wenn der Raid durch ist!"
+
+
+
+L["send raid end"] = "Raid Ende"
+L["send raid end desc"] = "Schaltet bei allen die Raid regeln aus."
 
 
 --@end-do-not-package@

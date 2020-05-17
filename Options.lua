@@ -46,6 +46,7 @@ function AutoRoll:GetOptions()
 				name = L["advanced options"],
 				type = "group",
 				order = 2,
+				hidden = "isItemGropsHidden",
 				args = self:GetOptionItemGroups("itemGroups"),
 		    },
 			itemGroupsRaid = {
@@ -67,6 +68,10 @@ end
 
 function AutoRoll:isItemGropsRaidHidden(info)
 	return self:getItemGroupPointer() ~= "itemGroupsRaid"
+end
+
+function AutoRoll:isItemGropsHidden(info)
+	return self:getItemGroupPointer() == "itemGroupsRaid"
 end
 
 function AutoRoll:GetOptionSettings()
@@ -101,28 +106,108 @@ function AutoRoll:GetOptionSettings()
 		},
 		-- show a short enable disable list for the itemGroups when enabled. disable advanced tab when not enabled.
 
-
-
-		send2raid = {
-			name = L["send rules to raid"],
-			desc = L["send rules to raid desc"],
-			type = "execute",
+		EasyRules = {
+			name = "Easy Rules",
+			type = "group",
+			inline = true,
+			width = "full",
+			disabled = self:getItemGroupPointer() == "itemGroupsRaid",
 			order = -2,
-			func = "SendRaidConfig",
-		},
+			args = self:getEasyRulesOptions(),
+	    },
 
-		sendRemove2raid = {
-			name = "remove raid rules",
-			desc = "raid rules will be deleted on all raid members!",
-			type = "execute",
+		RaidTools = {
+			name = "Raid Tools",
+			type = "group",
+			inline = true,
 			order = -1,
-			func = "SendRaidConfigRemove",
-		},
+			args = {
+				headerDescription = {
+					type = "description",
+					name = L["raid tools desc"],
+					order = 0,
+				},
+				send2raid = {
+					name = L["send rules to raid"],
+					desc = L["send rules to raid desc"],
+					type = "execute",
+					order = 1,
+					func = "SendRaidConfig",
+				},
 
-		
-
-
+				sendRemove2raid = {
+					name = L["send raid end"],
+					desc = L["send raid end desc"],
+					type = "execute",
+					order = 2,
+					func = "SendRaidConfigRemove",
+				},
+			},
+	    },
 	}
+end
+
+function AutoRoll:getEasyRulesOptions()
+	local itemGroups = {}
+	local order = 1
+	for itemGroupId,dbItemGroup in ipairs(self:GetItemGroupDb(self:getItemGroupPointer())) do
+
+
+				itemGroups["enablded"..itemGroupId] = {
+					name = L["itemGroup activ"],
+					desc = L["itemGroup activ desc"],
+					type = "toggle",
+					order = order,
+					get = "IsItemGroupEnabledEasy",
+					set = "ToggleItemGroupEnabledEasy",
+					arg = itemGroupId,
+					width = "half",
+				}
+				order = order +1
+
+				itemGroups["description"..itemGroupId] = {
+					name = dbItemGroup.description,
+					type = "description",
+					width = 1.6,
+					order = order,
+				}
+				order = order +1
+
+				itemGroups["rs"..itemGroupId] = {
+      				name = L["auto roll"]..":",
+      				desc = L["auto roll desc"],
+      				type = "select",
+      				order = order,
+      				values = self.rollOptions,
+      				get = "GetItemGroupRollOptionSuccsessEasy",
+      				set = "SetItemGroupRollOptionSuccsessEasy",
+      				style = "dropdown",
+      				arg = itemGroupId,
+      				width = "half",
+    			}
+    			order = order +1
+
+    			itemGroups["share"..itemGroupId] = {
+					name = L["share active"],
+					desc = L["share active desc"],
+					type = "toggle",
+					order = order,
+					get = "IsItemGroupShareEnabledEasy",
+					set = "ToggleItemGroupShareEnabledEasy",
+					arg = itemGroupId,
+					width = "half",
+				}
+				order = order +1
+
+				itemGroups["nl"..itemGroupId] = {
+					type = "header",
+					name = "",
+					order = order,
+				}
+				order = order +1
+
+	end
+	return itemGroups
 end
 
 function AutoRoll:GetOptionDebug()
@@ -486,6 +571,35 @@ end
 
 function AutoRoll:ToggleItemGroupEnabled(info, value)
 	self:GetItemGroupDb(info[1])[info.arg].enabled = value
+end
+
+function AutoRoll:IsItemGroupEnabledEasy(info)
+	return self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].enabled
+end
+
+function AutoRoll:ToggleItemGroupEnabledEasy(info, value)
+	self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].enabled = value
+end
+
+function AutoRoll:GetItemGroupRollOptionSuccsessEasy(info)
+	return self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].rollOptionSuccsess
+end
+
+function AutoRoll:SetItemGroupRollOptionSuccsessEasy(info, value)
+	self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].rollOptionSuccsess = value
+end
+
+function AutoRoll:IsItemGroupShareEnabledEasy(info)
+	if self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].share == nil then
+		return false
+	else
+		return self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].share.enabled
+	end
+end
+
+function AutoRoll:ToggleItemGroupShareEnabledEasy(info, value)
+	self:GetItemGroupDb(self:getItemGroupPointer())[info.arg].share.enabled = value
+	self:refreshOptions();
 end
 
 function AutoRoll:IsProfileItemGroupsEnabled(info)
