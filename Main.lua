@@ -283,6 +283,7 @@ end
 
 function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
 	if sender == UnitName("player") then return end -- ignore mesage from my self
+	if self:getItemGroupPointer() == "itemGroupsRaid" and prefix == "ar3_rc" then return end -- when you allready has a raid config do not recive. 
 
 	-- check should we do the command or is a user confirm required
 	-- @Todo: user GetGuildInfo to check is the sender in my guild
@@ -314,7 +315,9 @@ function AutoRoll:confirmRaidConfigRecive(itemGroups, playerName)
 end
 
 function AutoRoll:SendRaidConfig()
-	self:installItemGroupRaidFromItemGroups()
+	if self:getItemGroupPointer() == "itemGroups" then
+		self:installItemGroupRaidFromItemGroups()
+	end
 	local LibDeflate = LibStub:GetLibrary("LibDeflate")
 	local s = self:Serialize(self.db.profile.itemGroupsRaid)
 	local cs = LibDeflate:CompressDeflate(s)
@@ -448,8 +451,8 @@ function AutoRoll:CheckShare(itemInfo, currentItemGroupId)
 --		print("vor würfeln. has_loot: "..has_loot)
 	if sharedata.has_loot < 1 then
 		--würfeln
-		self:Print(self.rollOptions[2].." "..L["for"].." "..itemInfo.itemLink.." "..sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
-		RollOnLoot(itemInfo.rollId, 2);
+		self:Print(self.rollOptions[self.db.profile[self:getItemGroupPointer()][currentItemGroupId].rollOptionSuccsess].." "..L["for"].." "..itemInfo.itemLink.." "..sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
+		RollOnLoot(itemInfo.rollId, self.db.profile[self:getItemGroupPointer()][currentItemGroupId].rollOptionSuccsess);
 	else
 		self:Print(self.rollOptions[0].." "..L["for"].." "..itemInfo.itemLink.." "..sharedata.loot_counter.."/"..sharedata.party_member.." "..L["has one"]);
 		RollOnLoot(itemInfo.rollId, 0);
