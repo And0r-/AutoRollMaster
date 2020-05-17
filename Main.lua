@@ -285,6 +285,7 @@ function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
 	if sender == UnitName("player") then return end -- ignore mesage from my self
 
 	-- check should we do the command or is a user confirm required
+	-- @Todo: user GetGuildInfo to check is the sender in my guild
 	if self.db.profile.guildItemGroupsEnabled and (UnitIsGroupAssistant(sender) or UnitIsGroupLeader(sender)) then
 		-- install/remove Raid Rules
 		if prefix == "ar3_rc" then
