@@ -121,23 +121,37 @@ function AutoRoll:OnEnable()
     self:RegisterEvent("START_LOOT_ROLL")
     self:RegisterEvent("LOOT_HISTORY_ROLL_COMPLETE")
 
-    self:RegisterComm("ar3")
+    self:RegisterComm("ar3_rc") -- recive a confi
+    self:RegisterComm("ar3_rmc") -- remove the raid config
 
 
     self:checkItemGroupPointer()
 
-    StaticPopupDialogs["CONFIRM_RECIVE_CONFIG"] = {
+    StaticPopupDialogs["CONFIRM_RECIVE_CONFIG_AR3"] = {
 		text = "%s send you a AutoRoll3000 config for this raid. install it?",
 		button1 = "Yes",
 		button2 = "No",
 		OnAccept = function(self, config)
 		  AutoRoll:installItemGroupRaid(config)
 		end,
-		timeout = 10,
+		timeout = 20,
 		whileDead = true,
 		hideOnEscape = true,
 		preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
-	}
+	};
+
+    StaticPopupDialogs["CONFIRM_REMOVE_CONFIG_AR3"] = {
+		text = "%s will remove your AutoRoll3000 Raid config. Remove it?",
+		button1 = "Yes",
+		button2 = "No",
+		OnAccept = function(self)
+		  AutoRoll:setItemGroupPointer("itemGroups")
+		end,
+		timeout = 20,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+	};
     -- Register AutoRoll db on Core addon, and set only the scope to this addon db. So profile reset works fine for all the addons.
     --self.db = FdHrT:AddAddonDBDefaults(dbDefaults).profile.AutoRoll;
 
@@ -261,18 +275,41 @@ function AutoRoll:installItemGroupRaid(itemGroupsRaid)
     -- switch to Raid config
     self:setItemGroupPointer("itemGroupsRaid")
 
+    self:Print("Raid Rules are now active")
+
     -- recive raid config when you are not in a group make no sence but better check it here
     self:checkItemGroupPointer()
 end
 
 function AutoRoll:OnCommReceived(prefix, message, distribution, sender)
+	if sender == UnitName("player") then return end -- ignore mesage from my self
 
+	-- check should we do the command or is a user confirm required
+	if self.db.profile.guildItemGroupsEnabled and (UnitIsGroupAssistant(sender) or UnitIsGroupLeader(sender)) then
+		-- install/remove Raid Rules
+		if prefix == "ar3_rc" then
+			self:ReciveItemGroupRaid(message)
+		elseif prefix == "ar3_rmc" then
+			self:setItemGroupPointer("itemGroups")
+		end
+	else
+		-- user has to confirm before the Raid Rules will be installed/removed
+		if prefix == "ar3_rc" then
+			self:confirmRaidConfigRecive(message, sender)
+		elseif prefix == "ar3_rmc" then
+			self:confirmRemoveRaidConfig(sender)
+		end
+		
+	end
+end
 
-	self:confirmRaidConfigRecive(message, sender)
+function AutoRoll:confirmRemoveRaidConfig(playerName)
+	StaticPopup_Show("CONFIRM_REMOVE_CONFIG_AR3", playerName)
+	
 end
 
 function AutoRoll:confirmRaidConfigRecive(itemGroups, playerName)
-	local dialog = StaticPopup_Show ("CONFIRM_RECIVE_CONFIG", playerName)
+	local dialog = StaticPopup_Show("CONFIRM_RECIVE_CONFIG_AR3", playerName)
 	dialog.data = itemGroups
 end
 
@@ -282,7 +319,11 @@ function AutoRoll:SendRaidConfig()
 	local s = self:Serialize(self.db.profile.itemGroupsRaid)
 	local cs = LibDeflate:CompressDeflate(s)
 	cs = LibDeflate:EncodeForWoWAddonChannel(cs)
-	self:SendCommMessage("ar3", cs, "RAID", "", "BULK")
+	self:SendCommMessage("ar3_rc", cs, "RAID", "", "BULK")
+end
+
+function AutoRoll:SendRaidConfigRemove()
+	self:SendCommMessage("ar3_rmc", "remove raid config", "RAID", "", "BULK")
 end
 
 function AutoRoll:setItemGroupPointer(value)

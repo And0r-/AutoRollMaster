@@ -107,9 +107,19 @@ function AutoRoll:GetOptionSettings()
 			name = L["send rules to raid"],
 			desc = L["send rules to raid desc"],
 			type = "execute",
-			order = -1,
+			order = -2,
 			func = "SendRaidConfig",
 		},
+
+		sendRemove2raid = {
+			name = "remove raid rules",
+			desc = "raid rules will be deleted on all raid members!",
+			type = "execute",
+			order = -1,
+			func = "SendRaidConfigRemove",
+		},
+
+		
 
 
 	}
