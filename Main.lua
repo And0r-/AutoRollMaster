@@ -121,6 +121,8 @@ function AutoRoll:OnEnable()
     self:RegisterEvent("START_LOOT_ROLL")
     self:RegisterEvent("LOOT_HISTORY_ROLL_COMPLETE")
 
+    -- @Todo: only use the comm "ar3" and "ar3_data" so it is possible to send on ar3 hei ther is a raid config with id xyz or delete raid config xyz and then send it on the data channel. 
+   	-- maybe after a client recive ther is a raid config xyz he has to send back i need the data and then wisper it back. and use the compression only on data
     self:RegisterComm("ar3_rc") -- recive a confi
     self:RegisterComm("ar3_rmc") -- remove the raid config
 
