@@ -50,7 +50,7 @@ function AutoRoll:GetOptions()
 				args = self:GetOptionItemGroups("itemGroups"),
 		    },
 			itemGroupsRaid = {
-				name = "Raid rules",
+				name = L["Raid rules"],
 				type = "group",
 				order = 2,
 				hidden = "isItemGropsRaidHidden",
@@ -116,7 +116,7 @@ function AutoRoll:GetOptionSettings()
 		-- show a short enable disable list for the itemGroups when enabled. disable advanced tab when not enabled.
 
 		EasyRules = {
-			name = "Easy Rules",
+			name = L["Easy Rules"],
 			type = "group",
 			inline = true,
 			width = "full",
@@ -127,7 +127,7 @@ function AutoRoll:GetOptionSettings()
 	    },
 
 		RaidTools = {
-			name = "Raid Tools",
+			name = L["Raid Tools"],
 			type = "group",
 			inline = true,
 			hidden = self.db.profile.profileItemGroupsEnabled == false and self:getItemGroupPointer() == "itemGroups",
@@ -224,7 +224,7 @@ end
 function AutoRoll:GetOptionDebug()
 	return {
 		status = {
-			name = "Status",
+			name = "Share Status",
 			desc = "Zeige informationen über die share itemvergabe",
 			type = "execute",
 			order = 2,
@@ -553,7 +553,6 @@ end
 
 function AutoRoll:refreshOptions()
 	local options = self:GetOptions();
-	if options.args.itemGroupsRaid.hidden == false then self:Print("Raid is not hidden :)") end
 	options.args.profiles = self.profilOptions
 	LibStub("AceConfigRegistry-3.0"):NotifyChange("AutoRoll3000")
     LibStub("AceConfig-3.0"):RegisterOptionsTable("AutoRoll3000", options)
@@ -584,8 +583,6 @@ function AutoRoll:RemoveItemGroupOption(info)
 	self:refreshOptions();
 end
 
-
-
 function AutoRoll:GetConditionType(info)
 	return self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].type
 end
@@ -593,6 +590,7 @@ end
 function AutoRoll:SetConditionType(info, value)
 	local condition = self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]]
 	condition.type = value
+	-- reset Condition data when condition type change
 	condition.args = {} -- @Todo: i store the args for each condition type at the same place I have to fix this later. until this is fixed, better reset the args. so when you switch from items to any other and then switch back it is empty.
 
 	-- default values

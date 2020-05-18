@@ -109,7 +109,7 @@ L["total won"] = "Total gewonnen"
 L["switch to default rules"] = "Raid hat sich aufgelöst, wechsle zu den eigenen Regeln"
 
 
-L["raid tools desc"] = "Hier kann man seine Regeln für diesen Raid an alle in der Gruppe senden.\rRegeln ändern geht danach aber erst nach dem Raid wieder!"
+L["raid tools desc"] = "Hier kann man seine AutoRoll3000 Regeln, für diesen Raid an alle in der Gruppe senden.\rSolange der Raid läuft können die Regeln jedoch nicht mehr verändert werden!"
 
 L["send rules to raid"] = "Raid Start"
 L["send rules to raid desc"] = "Sendet deine Regeln an allen im Raid die das Addon haben. Regeln können danach erst wieder bearbeitet werden, wenn der Raid durch ist!"

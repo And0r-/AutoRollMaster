@@ -41,7 +41,8 @@ L["item"] = "Item"
 
 L["ZG coin desc"] = "ZG coins"
 L["ZG bijous desc"] = "ZG bijoux"
-L["all green items"] = "all green items"
+L["all green items"] = "All green items"
+L["all items disenchanter"] = "All items (only disenchanters)"
 
 
 L["roll"] = "Roll"
@@ -57,8 +58,8 @@ L["overview"] = "Overview"
 L["advanced options"] = "Advanced Options"
 
 
-L["accept share config"] = "Guild leadership decides what I roll on (coming in second beta)"
-L["accept share config desc"] = "Guild leadership can override my conditions during a raid"
+L["accept share config"] = "Automatically accept rules from raid management"
+L["accept share config desc"] = "Raid leadership can override my conditions during a raid"
 
 L["use local config"] = "Enable rolling conditions"
 L["use local config desc"] = "Disables the local AutoRoll conditions"
@@ -68,8 +69,8 @@ L["headerDescription"] = "Multiple groups can be defined here. \rIf all conditio
 L["itemGroup activ"] = "Active"
 L["itemGroup activ desc"] = "Condition group is active" -- 15/05 ist es normal dass hier die Beschreibung keine Aktion beschreibt, sondern ein Zustand?
 
-L["share active"] = "Share" -- 15/05 Split = in mehrere Teile teilen, Share = aushändigen/teilen im sozialen Sinne. kA was besser stimmt.
-L["share active desc"] = "Share among group"
+L["share active"] = "Round-robin"
+L["share active desc"] = "Everyone in the group receives the same number of items"
 
 L["itemGroup name"] = "Group name"
 
@@ -83,6 +84,9 @@ L["auto roll desc"] = "Displays what should happen to an item when all condition
 L["add group"] = "Add group"
 L["add group desc"] = "Add a new empty group"
 L["new group name"] = "New group"
+
+L["remove group"] = "Delete group"
+L["remove group desc"] = "Delete this group (cannot be undone)"
 
 L["share hint"] = "Sharing is enabled. You only participate in rolls for items until you get one. \rAfterwards, you pass until everyone got one."
 
@@ -108,6 +112,8 @@ L["total won"] = "Total won"
 
 L["switch to default rules"] = "Raid has broken up, switch to your own rules"
 
+
+
 L["send rules to raid"] = "send rules to raid"
 L["send rules to raid desc"] = "Send your own rules to all in raid that have this addon"
 
@@ -117,7 +123,7 @@ L["send raid end desc"] = "Turns off the raid rules for everyone."
 L["disenchanter toogle"] = "Disenchanters"
 L["disenchanter toogle desc"] = "I am responsible for disenchanting the unnecessary items in raids"
 
-L["is disenchanter"] = "Disenchanters"
+L["is disenchanter"] = "Disenchanter"
 
 L["send you a AutoRoll3000 config for this raid. install it?"] = "sends you AutoRoll3000 rules for this raid, install?"
 L["will remove your AutoRoll3000 Raid config. Remove it?"] = "wants to delete the AutoRoll3000 raid rules. Clear?"
@@ -129,6 +135,8 @@ L["Raid Rules are now not active"] = "Raid rules turned off"
 
 L["Raid rules"] = "Reaid rules"
 L["Easy Rules"] = "Easy rules"
+
 L["Raid Tools"] = "Raid Tools"
+L["raid tools desc"] = "Here you can send your AutoRoll3000 rules for everyone in the group for this raid. \rAs long as the raid is running, the rules can no longer be changed!"
 
 --@end-do-not-package@
