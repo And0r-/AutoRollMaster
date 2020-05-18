@@ -52,8 +52,8 @@ L["overview"] = "Übersicht"
 L["advanced options"] = "Erweiterte Einstellungen"
 
 
-L["accept share config"] = "Gildenleitung kann bestimmen was ich würfeln soll (kommt in Beta2)"
-L["accept share config desc"] = "Wärend einem Raid kann die Gildenleitung meine eigenen Regeln überschreiben."
+L["accept share config"] = "Regeln von Raidleitung automatisch annehmen"
+L["accept share config desc"] = "Wärend einem Raid kann die Leitung meine eigenen Regeln überschreiben."
 
 L["use local config"] = "Würfelregeln einschalten"
 L["use local config desc"] = "Schaltet die eigenen AutoRoll regeln ein"

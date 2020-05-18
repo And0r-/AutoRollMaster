@@ -71,7 +71,7 @@ function AutoRoll:isItemGropsRaidHidden(info)
 end
 
 function AutoRoll:isItemGropsHidden(info)
-	return self:getItemGroupPointer() == "itemGroupsRaid"
+	return self:getItemGroupPointer() == "itemGroupsRaid" or self.db.profile.profileItemGroupsEnabled == false
 end
 
 function AutoRoll:GetOptionSettings()
@@ -112,6 +112,7 @@ function AutoRoll:GetOptionSettings()
 			inline = true,
 			width = "full",
 			disabled = self:getItemGroupPointer() == "itemGroupsRaid",
+			hidden = self.db.profile.profileItemGroupsEnabled == false and self:getItemGroupPointer() == "itemGroups",
 			order = -2,
 			args = self:getEasyRulesOptions(),
 	    },
@@ -120,6 +121,7 @@ function AutoRoll:GetOptionSettings()
 			name = "Raid Tools",
 			type = "group",
 			inline = true,
+			hidden = self.db.profile.profileItemGroupsEnabled == false and self:getItemGroupPointer() == "itemGroups",
 			order = -1,
 			args = {
 				headerDescription = {
@@ -608,6 +610,7 @@ end
 
 function AutoRoll:ToggleProfileItemGroupsEnabled(info, value)
 	self.db.profile.profileItemGroupsEnabled = value
+	self:refreshOptions();
 end
 
 function AutoRoll:IsGuildItemGroupsEnabled(info)
