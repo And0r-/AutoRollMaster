@@ -40,7 +40,7 @@ L["item"] = "Item"
 
 
 L["ZG coin desc"] = "ZG coins"
-L["ZB bijous desc"] = "ZG bijoux"
+L["ZG bijous desc"] = "ZG bijoux"
 L["all green items"] = "all green items"
 
 

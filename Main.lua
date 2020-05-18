@@ -28,6 +28,7 @@ local dbDefaults = {
 		profileItemGroupsEnabled = false, -- on default it should not use any ItemGroups to auto roll.
 
 		disenchanter = false,
+		itemGroupsPointer = "itemGroups",
 
 		-- savedItems = { -- it will be possible to remember the decision on the roll frame. this is stored here
 		-- 	--[19698] = 0,
@@ -56,7 +57,7 @@ local dbDefaults = {
 				},
 			},
 			{
-				description = L["ZB bijous desc"],
+				description = L["ZG bijous desc"],
 				enabled = true,
 				share = {
 					enabled = true,
@@ -66,6 +67,20 @@ local dbDefaults = {
 					[1] = {
 						type = "item",
 						args = {"19707,19708,19709,19710,19711,19712,19713,19714,19715"},
+					}
+				},
+			},
+			{ -- 
+				description = L["all items disenchanter"],
+				enabled = false, 
+				share = {
+					enabled = false,
+				},
+				rollOptionSuccsess = 2,
+				conditions = {
+					[1] = {
+						type = "disenchanter",
+						args = {true},
 					}
 				},
 			},
@@ -166,6 +181,10 @@ end
 function AutoRoll:loadDb()
 	self.db = LibStub("AceDB-3.0"):New("AutoRollDB", dbDefaults, true)
 	self.profilOptions = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+	
+	self.db.RegisterCallback(self, "OnProfileChanged", "refreshOptions")
+	self.db.RegisterCallback(self, "OnProfileCopied", "refreshOptions")
+	self.db.RegisterCallback(self, "OnProfileReset", "refreshOptions")
 end
 
 function AutoRoll:ChatCommand(input)

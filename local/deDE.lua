@@ -35,8 +35,9 @@ L["item"] = "Item"
 
 
 L["ZG coin desc"] = "ZG Münzen"
-L["ZB bijous desc"] = "ZB Schmuck"
-L["all green items"] = "alle grüne items"
+L["ZG bijous desc"] = "ZG Schmuck"
+L["all green items"] = "Alle grünen Items"
+L["all items disenchanter"] = "Alle Items (nur Entzauberer)"
 
 
 L["roll"] = "Würfle"
