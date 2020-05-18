@@ -1,4 +1,4 @@
-AutoRoll = LibStub("AceAddon-3.0"):GetAddon("FdHrT_AutoRoll")
+AutoRoll = LibStub("AceAddon-3.0"):GetAddon("AutoRoll3000")
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
 -- 48	Blackfathom Deeps
