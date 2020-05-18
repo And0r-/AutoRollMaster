@@ -1,3 +1,7 @@
+0.5.1:
+- default language is now english
+- fix a bug when you use the default language
+
 0.5.0:
 - Now anyone can send his config to the complet raid. This raid config will disapeare when the group size shrink more then 50%
 - When anyone get a Raid config from not a raid lead/assist ther will now be a confirm request before installing anything.
