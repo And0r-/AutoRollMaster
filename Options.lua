@@ -85,6 +85,15 @@ function AutoRoll:GetOptionSettings()
 			set = "ToggleGuildItemGroupsEnabled",
 			width = "full",
 		},
+		disenchanter = {
+			name = L["disenchanter toogle"],
+			desc = L["disenchanter toogle desc"],
+			type = "toggle",
+			order = 2,
+			get = "IsDisenchanter",
+			set = "ToggleDisenchanter",
+			width = "full",
+		},
 		-- I do not see a solution to do this so it is working for everyone. xloot will overwrite to lot.
 		-- saveRollOptionsEnabled = {
 		-- 	name = "Beim würfeln kann man angeben das nächste mal wieder das selbe zu wählen",
@@ -127,13 +136,13 @@ function AutoRoll:GetOptionSettings()
 				headerDescription = {
 					type = "description",
 					name = L["raid tools desc"],
-					order = 0,
+					order = 1,
 				},
 				send2raid = {
 					name = L["send rules to raid"],
 					desc = L["send rules to raid desc"],
 					type = "execute",
-					order = 1,
+					order = 2,
 					func = "SendRaidConfig",
 				},
 
@@ -141,7 +150,7 @@ function AutoRoll:GetOptionSettings()
 					name = L["send raid end"],
 					desc = L["send raid end desc"],
 					type = "execute",
-					order = 2,
+					order = 3,
 					func = "SendRaidConfigRemove",
 				},
 			},
@@ -322,7 +331,7 @@ function AutoRoll:GetOptionItemGroups(itemGroupName)
 		desc = L["add group desc"],
 		type = "execute",
 		disabled = "isItemGroupDisabled",
-		order = -1,
+		order = -2,
 		func = "AddItemGroupOption",
 		--arg = itemGroupId,
 	}
@@ -354,8 +363,18 @@ function AutoRoll:GetOptionItemGroupConditions(itemGroupName, itemGroupId)
 		name = L["add condition"],
 		desc = L["add condition desc"],
 		type = "execute",
-		order = -1,
+		order = -2,
 		func = "AddConditionOption",
+		arg = itemGroupId,
+	}
+
+	conditions.removeItemGroupButton = {
+		name = L["remove group"],
+		desc = L["remove group desc"],
+		type = "execute",
+		disabled = "isItemGroupDisabled",
+		order = -1,
+		func = "RemoveItemGroupOption",
 		arg = itemGroupId,
 	}
 
@@ -380,6 +399,7 @@ function AutoRoll:GetOptionItemGroupConditions(itemGroupName, itemGroupId)
 			order = order +1;
 
 			if condition.type == "item" then conditions, order =self:AddItemConditonOptions(conditions,order,itemGroupId,conditionId) end
+			if condition.type == "disenchanter" then conditions, order =self:AddDisenchanterOptions(conditions,order,itemGroupId,conditionId) end
 			if condition.type == "quality" then conditions, order =self:AddQualityConditonOptions(conditions,order,itemGroupId,conditionId) end
 			if condition.type == "dungeon" then conditions, order =self:AddDungeonConditonOptions(conditions,order,itemGroupId,conditionId) end
 			if condition.type == "party_member" then conditions, order =self:AddPartyMemberConditonOptions(conditions,order,itemGroupId,conditionId) end
@@ -416,6 +436,25 @@ function AutoRoll:AddItemConditonOptions(conditions,order,itemGroupId,conditionI
 
 	return conditions, order;
 end
+
+function AutoRoll:AddDisenchanterOptions(conditions,order,itemGroupId,conditionId)
+	conditions["condition"..conditionId.."Disenchanter"] = {
+		name = "",
+		desc = "",
+		type = "select",
+		order = order,
+		get = "GetConditionArg",
+		set = "SetConditionArg",
+		style = "dropdown",
+		values = {[true]="ja", [false]="nein"},
+		arg = {itemGroupId,conditionId,1},
+	}
+	order = order +1
+
+	return conditions, order;
+end
+
+
 
 function AutoRoll:AddQualityConditonOptions(conditions,order,itemGroupId,conditionId)
 --		arg = {itemGroupId,conditionId},
@@ -540,13 +579,30 @@ function AutoRoll:AddItemGroupOption(info)
 	self:refreshOptions();
 end
 
+function AutoRoll:RemoveItemGroupOption(info)
+	self:GetItemGroupDb(info[1])[info.arg] = nil
+	self:refreshOptions();
+end
+
+
 
 function AutoRoll:GetConditionType(info)
 	return self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].type
 end
 
 function AutoRoll:SetConditionType(info, value)
-	self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]].type = value
+	local condition = self:GetItemGroupDb(info[1])[info.arg[1]].conditions[info.arg[2]]
+	condition.type = value
+	condition.args = {} -- @Todo: i store the args for each condition type at the same place I have to fix this later. until this is fixed, better reset the args. so when you switch from items to any other and then switch back it is empty.
+
+	-- default values
+	if value == "disenchanter" then
+		condition.args[1] = true --set disenchanter to true
+	elseif value == "party_member" then
+		condition.args[1] = "oneOf"
+		condition.args[2] = "Name1,Name2,Name3"
+	end
+
 	self:refreshOptions();
 end
 
@@ -620,6 +676,15 @@ end
 function AutoRoll:ToggleGuildItemGroupsEnabled(info, value)
 	self.db.profile.guildItemGroupsEnabled = value
 end
+
+function AutoRoll:IsDisenchanter(info)
+	return self.db.profile.disenchanter
+end
+
+function AutoRoll:ToggleDisenchanter(info, value)
+	self.db.profile.disenchanter = value
+end
+
 
 -- function AutoRoll:IssavedItemsEnabled(info)
 -- 	return self.db.profile.savedItemsEnabled

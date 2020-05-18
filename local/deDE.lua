@@ -53,7 +53,7 @@ L["advanced options"] = "Erweiterte Einstellungen"
 
 
 L["accept share config"] = "Regeln von Raidleitung automatisch annehmen"
-L["accept share config desc"] = "Wärend einem Raid kann die Leitung meine eigenen Regeln überschreiben."
+L["accept share config desc"] = "Während einem Raid kann die Leitung meine eigenen AutoRoll Regeln überschreiben."
 
 L["use local config"] = "Würfelregeln einschalten"
 L["use local config desc"] = "Schaltet die eigenen AutoRoll regeln ein"
@@ -78,6 +78,9 @@ L["auto roll desc"] = "Gibt an was mit den Items geschehen soll, welche alle Reg
 L["add group"] = "Gruppe hinzufügen"
 L["add group desc"] = "Füge eine neue, leere Gruppe hinzu"
 L["new group name"] = "Neue Gruppe"
+
+L["remove group"] = "Lösche Gruppe"
+L["remove group desc"] = "Lösche diese Gruppe (kann nicht rückgängig gemacht werden)"
 
 L["share hint"] = "Aufteilen ist aktiv. Auf ein Item wird nur gefürfelt bis man eins hat. \rDanach wird gepasst bis alle eins haben."
 
@@ -114,6 +117,11 @@ L["send rules to raid desc"] = "Sendet deine Regeln an allen im Raid die das Add
 
 L["send raid end"] = "Raid Ende"
 L["send raid end desc"] = "Schaltet bei allen die Raid regeln aus."
+
+L["disenchanter toogle"] = "Entzauberer"
+L["disenchanter toogle desc"] = "Ich bin zuständig die nicht benötigten Items in Raids zu entzaubern"
+
+L["is disenchanter"] = "Ist Entzauberer"
 
 
 --@end-do-not-package@

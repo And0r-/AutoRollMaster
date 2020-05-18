@@ -3,10 +3,10 @@ local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
 -- @todo:  save this in AutoRoll, to not have dublications...
 AutoRoll.rollOptions = {[0]=L["Pass"], [1]=L["Need"], [2]=L["Greed"]}
-AutoRoll.itemQuality = {[2]=L["uncommon"], [3]=L["rare"], [4]=L["epic"], [5]=L["legendary"], [6]=L["artifact"]}
+AutoRoll.itemQuality = {[2]="|cFF1eff00"..L["uncommon"].."|r", [3]="|cff0070dd"..L["rare"].."|r", [4]="|cffa335ee"..L["epic"].."|r", [5]="|cffff8000"..L["legendary"].."|r", [6]="|cffe6cc80"..L["artifact"].."|r"}
 AutoRoll.conditionOperaters = {["=="]=L["equal"],[">="]=L["minimum"],["<="]=L["maximum"],[">"]=L["bigger then"],["<"]=L["lower then"]}
 AutoRoll.dungeonList = {[309]=L["Zul'Gurub"],[249]=L["Ony"], [409]=L["MC"], [469]=L["BWL"], [389]="test instance"}
-AutoRoll.conditionList = {["quality"]=L["Quality"], ["dungeon"]=L["Dungeon"], ["party_member"]=L["in group with"], ["lua"]="Lua",["disabled"]=L["disabled"],["deleted"]=L["deleted"],["item"]=L["item"]}
+AutoRoll.conditionList = {["disenchanter"]=L["is disenchanter"], ["quality"]=L["Quality"], ["dungeon"]=L["Dungeon"], ["party_member"]=L["in group with"], ["lua"]="Lua",["disabled"]=L["disabled"],["deleted"]=L["deleted"],["item"]=L["item"]}
 
 
 
@@ -26,6 +26,8 @@ local dbDefaults = {
 		guildItemGroupsEnabled = true, -- use a group config to auto roll in a raid from a guild leader
 		--savedItemsEnabled = true, -- add the options to store 
 		profileItemGroupsEnabled = false, -- on default it should not use any ItemGroups to auto roll.
+
+		disenchanter = false,
 
 		-- savedItems = { -- it will be possible to remember the decision on the roll frame. this is stored here
 		-- 	--[19698] = 0,
@@ -393,6 +395,8 @@ function AutoRoll:CheckCondition(itemInfo, condition)
 		return tContains({strsplit(",",condition.args[1])},tostring(itemInfo.itemId))
 	elseif condition.type == "disabled" then 
 		return true
+	elseif condition.type == "disenchanter" then 
+		return self.db.profile.disenchanter == condition.args[1]
 	elseif condition.type == "lua" then 
 		return true
 	elseif condition.type == "party_member" then
