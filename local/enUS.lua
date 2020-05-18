@@ -36,8 +36,8 @@ L["deleted"] = "Delete"
 L["item"] = "Item"
 
 
-L["ZG coin desc"] = "ZG coins"
-L["ZG bijous desc"] = "ZG bijoux"
+L["ZG coin desc"] = "ZG Coins"
+L["ZG bijous desc"] = "ZG Bijous"
 L["all green items"] = "All green items"
 L["all items disenchanter"] = "All items (only disenchanters)"
 
@@ -111,7 +111,7 @@ L["switch to default rules"] = "Raid has broken up, switch to your own rules"
 
 
 
-L["send rules to raid"] = "send rules to raid"
+L["send rules to raid"] = "Raid start"
 L["send rules to raid desc"] = "Send your own rules to all in raid that have this addon"
 
 L["send raid end"] = "Raid end"
