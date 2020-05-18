@@ -214,7 +214,10 @@ function AutoRoll:GetRollIdDataDebug(rollId, itemId)
 		itemId = itemId or 19698,
 	}
 
+	self:Print("Hole Infos zu item: "..itemInfo.itemId)
 	itemInfo.name, itemInfo.itemLink, itemInfo.quality, _, _, itemInfo.itemType, itemInfo.itemSubType, _, itemInfo.itemEquipLoc, itemInfo.texture, _ = GetItemInfo(itemInfo.itemId)
+	self:Print("Infos zu diesem Item geholt: "..itemInfo.itemLink)
+
 	return itemInfo
 end
 
