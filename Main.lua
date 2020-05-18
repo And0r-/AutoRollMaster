@@ -1,4 +1,4 @@
-local AutoRoll = LibStub("AceAddon-3.0"):NewAddon("FdHrT_AutoRoll", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceSerializer-3.0")
+local AutoRoll = LibStub("AceAddon-3.0"):NewAddon("FdHrT_AutoRoll", "AceConsole-3.0", "AceEvent-3.0", "AceComm-3.0", "AceSerializer-3.0", "AceTimer-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("AutoRoll")
 
 -- @todo:  save this in AutoRoll, to not have dublications...
@@ -8,7 +8,7 @@ AutoRoll.conditionOperaters = {["=="]=L["equal"],[">="]=L["minimum"],["<="]=L["m
 AutoRoll.dungeonList = {[309]=L["Zul'Gurub"],[249]=L["Ony"], [409]=L["MC"], [469]=L["BWL"], [389]="test instance"}
 AutoRoll.conditionList = {["disenchanter"]=L["is disenchanter"], ["quality"]=L["Quality"], ["dungeon"]=L["Dungeon"], ["party_member"]=L["in group with"], ["lua"]="Lua",["disabled"]=L["disabled"],["deleted"]=L["deleted"],["item"]=L["item"]}
 
-
+AutoRoll.trollTimerCount = 0
 
 
 
@@ -214,12 +214,30 @@ function AutoRoll:GetRollIdDataDebug(rollId, itemId)
 		itemId = itemId or 19698,
 	}
 
-	self:Print("Hole Infos zu item: "..itemInfo.itemId)
-	itemInfo.name, itemInfo.itemLink, itemInfo.quality, _, _, itemInfo.itemType, itemInfo.itemSubType, _, itemInfo.itemEquipLoc, itemInfo.texture, _ = GetItemInfo(itemInfo.itemId)
-	self:Print("Infos zu diesem Item geholt: "..itemInfo.itemLink)
+	itemInfo.itemId, itemInfo.itemType, itemInfo.itemSubType, itemInfo.itemEquipLoc, itemInfo.icon, itemInfo.itemClassID, itemInfo.itemSubClassID = GetItemInfoInstant(itemInfo.itemId);
+	itemInfo.itemLink = select(2,GetItemInfo(itemInfo.itemId))
+
+	-- it is only possible to get a itemInfo when it is on cache from the client... when not it will return nil and request it on the server for later use...
+	-- so when i do not have it in cache i have to "sleep" some seconds
+	if itemInfo.itemLink == nil then
+		self.trollTimerCount = self.trollTimerCount +1
+		if self.trollTimerCount <= 6 then
+			self.trollTimer = itemInfo
+			self:ScheduleTimer("TrollLater", 0.5)
+		end
+		return nil
+	end
+
+	self.trollTimerCount = 0
+	self.trollTimer = {}
 
 	return itemInfo
 end
+
+function AutoRoll:TrollLater()
+	AutoRoll:troll(self.trollTimer.rollId,self.trollTimer.itemId)
+end
+
 
 -- Only for addon develop:
 
@@ -235,6 +253,7 @@ end
 -- Debug function to emulate a roll windows event
 function AutoRoll:troll(rollId, itemId)
 	local itemInfo = self:GetRollIdDataDebug(rollId, itemId);
+	if itemInfo == nil then return end
 	self:CheckRoll(itemInfo)
 end
 
