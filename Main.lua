@@ -147,9 +147,9 @@ function AutoRoll:OnEnable()
     self:checkItemGroupPointer()
 
     StaticPopupDialogs["CONFIRM_RECIVE_CONFIG_AR3"] = {
-		text = "%s send you a AutoRoll3000 config for this raid. install it?",
-		button1 = "Yes",
-		button2 = "No",
+		text = "%s "..L["send you a AutoRoll3000 config for this raid. install it?"],
+		button1 = L["Yes"],
+		button2 = L["No"],
 		OnAccept = function(self, config)
 		  AutoRoll:ReciveItemGroupRaid(config)
 		end,
@@ -160,9 +160,9 @@ function AutoRoll:OnEnable()
 	};
 
     StaticPopupDialogs["CONFIRM_REMOVE_CONFIG_AR3"] = {
-		text = "%s will remove your AutoRoll3000 Raid config. Remove it?",
-		button1 = "Yes",
-		button2 = "No",
+		text = "%s "..L["will remove your AutoRoll3000 Raid config. Remove it?"],
+		button1 = L["Yes"],
+		button2 = L["No"],
 		OnAccept = function(self)
 		  AutoRoll:setItemGroupPointer("itemGroups")
 		end,
@@ -320,8 +320,6 @@ function AutoRoll:installItemGroupRaid(itemGroupsRaid)
     -- switch to Raid config
     self:setItemGroupPointer("itemGroupsRaid")
 
-    self:Print("Raid Rules are now active")
-
     -- recive raid config when you are not in a group make no sence but better check it here
     self:checkItemGroupPointer()
 end
@@ -377,8 +375,10 @@ end
 
 function AutoRoll:setItemGroupPointer(value)
 	if value == "itemGroupsRaid" then 
+		self:Print(L["Raid Rules are now active"])
 		self:RegisterEvent("GROUP_ROSTER_UPDATE") 
 	else
+		self:Print(L["Raid Rules are now not active"])
 		self:UnregisterEvent("GROUP_ROSTER_UPDATE") 
 	end
 

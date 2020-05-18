@@ -80,7 +80,7 @@ L["add group"] = "Gruppe hinzufügen"
 L["add group desc"] = "Füge eine neue, leere Gruppe hinzu"
 L["new group name"] = "Neue Gruppe"
 
-L["remove group"] = "Lösche Gruppe"
+L["remove group"] = "Gruppe Lösche"
 L["remove group desc"] = "Lösche diese Gruppe (kann nicht rückgängig gemacht werden)"
 
 L["share hint"] = "Aufteilen ist aktiv. Auf ein Item wird nur gefürfelt bis man eins hat. \rDanach wird gepasst bis alle eins haben."
@@ -123,6 +123,18 @@ L["disenchanter toogle"] = "Entzauberer"
 L["disenchanter toogle desc"] = "Ich bin zuständig die nicht benötigten Items in Raids zu entzaubern"
 
 L["is disenchanter"] = "Ist Entzauberer"
+
+L["send you a AutoRoll3000 config for this raid. install it?"] = "sendet dir AutoRoll3000 Regeln für diesen Raid, Installieren?"
+L["will remove your AutoRoll3000 Raid config. Remove it?"] = "möchte die AutoRoll3000 Raidregeln löschen. Löschen?"
+L["Yes"] = "Ja"
+L["No"] = "Nein"
+
+L["Raid Rules are now active"] = "Raidregeln sind nun aktiv"
+L["Raid Rules are now not active"] = "Raidregeln ausgeschaltet"
+
+L["Raid rules"] = "Reaidregeln"
+L["Easy Rules"] = "Einfache Regeln"
+L["Raid Tools"] = "Raid Tools"
 
 
 --@end-do-not-package@

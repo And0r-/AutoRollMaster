@@ -111,5 +111,24 @@ L["switch to default rules"] = "Raid has broken up, switch to your own rules"
 L["send rules to raid"] = "send rules to raid"
 L["send rules to raid desc"] = "Send your own rules to all in raid that have this addon"
 
+L["send raid end"] = "Raid end"
+L["send raid end desc"] = "Turns off the raid rules for everyone."
+
+L["disenchanter toogle"] = "Disenchanters"
+L["disenchanter toogle desc"] = "I am responsible for disenchanting the unnecessary items in raids"
+
+L["is disenchanter"] = "Disenchanters"
+
+L["send you a AutoRoll3000 config for this raid. install it?"] = "sends you AutoRoll3000 rules for this raid, install?"
+L["will remove your AutoRoll3000 Raid config. Remove it?"] = "wants to delete the AutoRoll3000 raid rules. Clear?"
+L["Yes"] = "Yes"
+L["No"] = "No"
+
+L["Raid Rules are now active"] = "Raid rules are now active"
+L["Raid Rules are now not active"] = "Raid rules turned off"
+
+L["Raid rules"] = "Reaid rules"
+L["Easy Rules"] = "Easy rules"
+L["Raid Tools"] = "Raid Tools"
 
 --@end-do-not-package@
