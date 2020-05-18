@@ -1,13 +1,10 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("AutoRoll", "enUS")
 
+if not L then return end
 
 --@localization(locale="enUS", format="lua_additive_table")@
 
 --@do-not-package@
--- @todo: ugly hack, i get a error L do not exist on a german client. so it is working for me at the moment, when aceLocale do not return the not needed langues i have to check this.
-if L == nul then return end
-
-
 L["Pass"] = "Pass"
 L["Need"] = "Need"
 L["Greed"] = "Greed"
