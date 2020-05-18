@@ -134,7 +134,7 @@ function AutoRoll:OnEnable()
 		button1 = "Yes",
 		button2 = "No",
 		OnAccept = function(self, config)
-		  AutoRoll:installItemGroupRaid(config)
+		  AutoRoll:ReciveItemGroupRaid(config)
 		end,
 		timeout = 20,
 		whileDead = true,
