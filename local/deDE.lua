@@ -65,7 +65,7 @@ L["itemGroup activ"] = "Aktiv"
 L["itemGroup activ desc"] = "Regel Gruppe ist Aktiv"
 
 L["share active"] = "Aufteilen"
-L["share active desc"] = "Jeder in der Gruppe erhält gleich viele"
+L["share active desc"] = "Jeder in der Gruppe erhält möglichst gleich viel Items"
 
 L["itemGroup name"] = "Gruppen Name"
 

@@ -72,7 +72,7 @@ local dbDefaults = {
 			},
 			{ -- 
 				description = L["all items disenchanter"],
-				enabled = false, 
+				enabled = true, 
 				share = {
 					enabled = false,
 				},
@@ -95,8 +95,8 @@ local dbDefaults = {
 					[1] = {
 						type = "quality",
 						args = {
-							"<=", 
-							3, --0 - Poor, 1 - Common, 2 - Uncommon, 3 - Rare, 4 - Epic, 5 - Legendary, 6 - Artifact, 7 - Heirloom, 8 - WoW Token
+							"==", 
+							2, --0 - Poor, 1 - Common, 2 - Uncommon, 3 - Rare, 4 - Epic, 5 - Legendary, 6 - Artifact, 7 - Heirloom, 8 - WoW Token
 						}, 
 					}
 					-- the following conditions are not implemented yet, and only a hint for me
@@ -181,7 +181,7 @@ end
 function AutoRoll:loadDb()
 	self.db = LibStub("AceDB-3.0"):New("AutoRollDB", dbDefaults, true)
 	self.profilOptions = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
-	
+
 	self.db.RegisterCallback(self, "OnProfileChanged", "refreshOptions")
 	self.db.RegisterCallback(self, "OnProfileCopied", "refreshOptions")
 	self.db.RegisterCallback(self, "OnProfileReset", "refreshOptions")
