@@ -176,7 +176,7 @@ function AutoRoll:getEasyRulesOptions()
 				order = order +1
 
 				itemGroups["rs"..itemGroupId] = {
-      				name = L["auto roll"]..":",
+      				name = "",
       				desc = L["auto roll desc"],
       				type = "select",
       				order = order,
