@@ -1,10 +1,12 @@
-0.4.2:
-- When anyone get a Raid config from not a raid lead/assist ther will now be a confirm request to the user.
-- It is possible to disable the recive from raid lead, so you get from everyone a confirm request befor the raid config will be installed.
-- And ther is now a remove raid config button to remove the raid config on each player in raid. (same confirm mechanic like on sending)
-
-0.4.1:
+0.5.0:
 - Now anyone can send his config to the complet raid. This raid config will disapeare when the group size shrink more then 50%
+- When anyone get a Raid config from not a raid lead/assist ther will now be a confirm request before installing anything.
+- It is possible to disable the auto-recive from raid lead, so you get from everyone a confirm request befor the raid config will be installed.
+- And ther is now a remove raid config button to remove the raid config on each player in raid. (same confirm mechanic like on sending)
+- Easy Rules; is only to configure the existing rules. this is a lot easyer and enough when you will not create own ones.
+- A lot of gui optimations to keep it simple.
+- remove a lot bugs
+
 
 0.4.0:
 - Fix some translations bugs
