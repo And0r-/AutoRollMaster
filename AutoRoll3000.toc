@@ -1,5 +1,5 @@
 ## Interface: 11304
-## Version: v1.0.0
+## Version: 0.5.3
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 

@@ -1,5 +1,5 @@
-1.0.0:
-First Release :D
+0.5.3:
+- Try to fix a bug so the beta version of this addon is visible on twitch app 
 
 0.5.1:
 - default language is now english
