@@ -179,7 +179,7 @@ function AutoRoll:getEasyRulesOptions()
 				itemGroups["description"..itemGroupId] = {
 					name = dbItemGroup.description,
 					type = "description",
-					width = 1.6,
+					width = 1.5,
 					order = order,
 				}
 				order = order +1
@@ -206,7 +206,7 @@ function AutoRoll:getEasyRulesOptions()
 					get = "IsItemGroupShareEnabledEasy",
 					set = "ToggleItemGroupShareEnabledEasy",
 					arg = itemGroupId,
-					width = "half",
+					width = 0.6,
 				}
 				order = order +1
 
@@ -446,7 +446,7 @@ function AutoRoll:AddDisenchanterOptions(conditions,order,itemGroupId,conditionI
 		get = "GetConditionArg",
 		set = "SetConditionArg",
 		style = "dropdown",
-		values = {[true]="ja", [false]="nein"},
+		values = {[true]=L["Yes"], [false]=L["No"]},
 		arg = {itemGroupId,conditionId,1},
 	}
 	order = order +1

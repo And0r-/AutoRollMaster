@@ -115,7 +115,7 @@ L["send rules to raid desc"] = "Send your own rules to all in raid that have thi
 L["send raid end"] = "Raid end"
 L["send raid end desc"] = "Turns off the raid rules for everyone."
 
-L["disenchanter toogle"] = "Disenchanters"
+L["disenchanter toogle"] = "Disenchanter"
 L["disenchanter toogle desc"] = "I am responsible for disenchanting the unnecessary items in raids"
 
 L["is disenchanter"] = "Disenchanter"
