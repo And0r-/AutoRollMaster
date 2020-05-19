@@ -1,3 +1,6 @@
+1.0.0:
+First Release :D
+
 0.5.1:
 - default language is now english
 - fix a bug when you use the default language
