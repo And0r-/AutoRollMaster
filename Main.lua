@@ -481,11 +481,11 @@ end
 function AutoRoll:findGroup(itemInfo, itemGroups)
 	if itemGroups == nil then return nil end -- no itemGroups created
 
-	for i, itemGroup in pairs(itemGroups) do
-		if itemGroup.enabled == false then break end
-
-		if self:CheckConditions(itemInfo, itemGroup) then 
-			return i 
+	for i, itemGroup in ipairs(itemGroups) do
+		if itemGroup.enabled == true then
+			if self:CheckConditions(itemInfo, itemGroup) then 
+				return i 
+			end
 		end
 	end
 	return nil
