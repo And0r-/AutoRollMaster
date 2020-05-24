@@ -19,6 +19,8 @@ local GetItemInfoInstant = GetItemInfoInstant
 local GetNumGroupMembers = GetNumGroupMembers
 local GetPlayerInfo = C_LootHistory.GetPlayerInfo
 
+local PLAYER_NAME = UnitName("player")
+
 
 local dbDefaults = {
 	profile = {
@@ -296,6 +298,7 @@ function AutoRoll:installItemGroupRaidFromItemGroups()
 	local itemGroupsRaid = {}
 	Copy_Table(self.db.profile.itemGroups, itemGroupsRaid)
 	itemGroupsRaid.raidSize = GetNumGroupMembers()
+	itemGroupsRaid.owner = PLAYER_NAME
 
 	self:installItemGroupRaid(itemGroupsRaid)
 end
@@ -388,6 +391,10 @@ end
 
 function AutoRoll:GROUP_ROSTER_UPDATE()
 	self:checkItemGroupPointer();
+
+	if self:getItemGroupPointer() == "itemGroupsRaid" and self.db.profile[self:getItemGroupPointer()].owner == PLAYER_NAME then
+		self:SendRaidConfig()
+	end
 end
 
 function AutoRoll:getItemGroupPointer()
