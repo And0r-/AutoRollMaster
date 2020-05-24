@@ -1,3 +1,8 @@
+0.5.4:
+- send config automatic when anyone join the raid
+- store more drop information.
+- fix a important bug. (When a group is disabled all groups later will be ignored and some time the group order was wrong on the check)
+
 0.5.3:
 - Try to fix a bug so the beta version of this addon is visible on twitch app 
 
