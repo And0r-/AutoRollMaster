@@ -575,6 +575,14 @@ function AutoRoll:LOOT_HISTORY_ROLL_COMPLETE()
 			if is_me then
 				self:rollItemWon(rollId)
 			end
+			-- /dump AutoRoll.db.profile["itemGroupsRaid"].share[4].data
+			local currentShare = self.db.profile[self:getItemGroupPointer()].share[self.db.profile[self:getItemGroupPointer()].rolls[rollId]]
+			if currentShare.data == nil then currentShare.data = {} end
+
+			if currentShare.data[name] == nil then currentShare.data[name] = 0 end
+			currentShare.data[name] = currentShare.data[name] + 1
+
+
 			break
 		end
 	end
